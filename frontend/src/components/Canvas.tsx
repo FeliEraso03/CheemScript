@@ -1,0 +1,107 @@
+import React, { useCallback, useRef } from 'react';
+import { useDrop } from 'react-dnd';
+import type { DragItem } from '../types/ast';
+import { IfBlock } from '../blocks/IfBlock';
+import { ForBlock } from '../blocks/ForBlock';
+import { WhileBlock } from '../blocks/WhileBlock';
+import { SwitchBlock } from '../blocks/SwitchBlock';
+import { VarBlock } from '../blocks/VarBlock';
+import { ArrayBlock } from '../blocks/ArrayBlock';
+import { MatrixBlock } from '../blocks/MatrixBlock';
+import { PrintBlock } from '../blocks/PrintBlock';
+import { InputBlock } from '../blocks/InputBlock';
+import { SleepBlock } from '../blocks/SleepBlock';
+import { useAST } from '../context/ASTContext';
+
+// Mapa de tipo de bloque -> componente React
+const BLOCK_COMPONENT_MAP: Record<
+  string, 
+  React.FC<{ 
+    id: string; 
+    onDelete?: () => void; 
+    onMoveUp?: () => void; 
+    onMoveDown?: () => void;
+  }>
+> = {
+  if:     IfBlock,
+  for:    ForBlock,
+  while:  WhileBlock,
+  switch: SwitchBlock,
+  var:    VarBlock,
+  arr:    ArrayBlock,
+  mat:    MatrixBlock,
+  print:  PrintBlock,
+  input:  InputBlock,
+  sleep:  SleepBlock,
+};
+
+// Genera un ID unico usando la API del navegador (mas robusto que Math.random)
+function generateId(): string {
+  return typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+export const Canvas: React.FC = () => {
+  const { nodes, rootNodes, addNode, removeNode, moveNodeUp, moveNodeDown } = useAST();
+
+  // useDrop devuelve ConnectDropTarget, que no es Ref<HTMLDivElement>.
+  // La solucion correcta es pasar el elemento al conector con useCallback.
+  const [{ isOver }, drop] = useDrop<DragItem, void, { isOver: boolean }>(() => ({
+    accept: 'BLOCK',
+    drop: (item, monitor) => {
+      if (monitor.didDrop()) return;
+      addNode({
+        id: generateId(),
+        type: item.blockType,
+        data: {}
+      });
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  }));
+
+  // Usamos un callback ref para combinar nuestro propio ref con el conector de react-dnd
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const setRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      containerRef.current = node;
+      drop(node); // Conecta el nodo al sistema de drop de react-dnd
+    },
+    [drop],
+  );
+
+  const hasBlocks = rootNodes.length > 0;
+
+  return (
+    <div
+      ref={setRef}
+      className={`canvas-area${isOver ? ' canvas-area--over' : ''}`}
+    >
+      {!hasBlocks && (
+        <div className="canvas-empty-hint">
+          <p>Arrastra bloques desde la paleta</p>
+        </div>
+      )}
+
+      <div className="canvas-blocks">
+        {rootNodes.map((nodeId, index) => {
+          const node = nodes[nodeId];
+          if (!node) return null;
+          
+          const BlockComponent = BLOCK_COMPONENT_MAP[node.type];
+          return BlockComponent ? (
+            <BlockComponent 
+              key={node.id} 
+              id={node.id}
+              onDelete={() => removeNode(node.id)}
+              onMoveUp={index > 0 ? () => moveNodeUp(node.id) : undefined}
+              onMoveDown={index < rootNodes.length - 1 ? () => moveNodeDown(node.id) : undefined}
+            />
+          ) : null;
+        })}
+      </div>
+    </div>
+  );
+};

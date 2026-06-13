@@ -1,0 +1,1050 @@
+/* =============================================================
+   CheemScript — Design System (Dark Theme)
+   Regla: CERO emojis en esta hoja ni en la UI
+   ============================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+:root {
+  /* --- Colores base: paleta oscura ----------------------------- */
+  --bg-main:        #0C0C0C;
+  --bg-canvas:      #111111;
+  --bg-surface:     #1A1A1A;
+  --bg-elevated:    #222222;
+  --border-color:   #282828;
+  --border-subtle:  #1E1E1E;
+  --text-main:      #EDEDED;
+  --text-secondary: #707070;
+  --text-muted:     #444444;
+  --hover-active:   #F0F0F0;
+
+  /* --- Estados --------------------------------------------- */
+  --error:          #C0392B;
+  --error-bg:       #1E0A0A;
+  --warning:        #D4860A;
+  --warning-bg:     #1E1500;
+  --success:        #27AE60;
+  --success-bg:     #061A0E;
+  --shiba-accent:   #C68B2A;
+  --shiba-accent-2: #E6A83A;
+
+  /* --- Bloques: Condicionales (azul acero sobre oscuro) ------- */
+  --bg-if:          #0E1624;
+  --accent-if:      #5B8DC0;
+
+  /* --- Bloques: Bucles (verde pino sobre oscuro) -------------- */
+  --bg-for:         #0A1810;
+  --accent-for:     #3EA868;
+  --bg-while:       #0B1912;
+  --accent-while:   #459970;
+
+  /* --- Bloques: Control de flujo (violeta sobre oscuro) ------- */
+  --bg-switch:      #150E22;
+  --accent-switch:  #8B64C4;
+
+  /* --- Bloques: Datos (ambar/terracota sobre oscuro) ---------- */
+  --bg-var:         #1A1206;
+  --accent-var:     #C49040;
+  --bg-arr:         #1A1006;
+  --accent-arr:     #C07838;
+  --bg-mat:         #1A0E06;
+  --accent-mat:     #BE6035;
+
+  /* --- Bloques: Nuevos bloques -------------------------------- */
+  --bg-print:       #170E20;
+  --accent-print:   #A370F0;
+  --bg-input:       #0E1B24;
+  --accent-input:   #4D97FF;
+  --bg-sleep:       #20120B;
+  --accent-sleep:   #FF8C1A;
+}
+
+/* =============================================================
+   Reset y base
+   ============================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Inter', system-ui, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =============================================================
+   Layout principal del editor
+   ============================================================= */
+
+.layout-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* =============================================================
+   Sidebar
+   ============================================================= */
+
+.sidebar {
+  width: 220px;
+  min-width: 220px;
+  background-color: var(--bg-main);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-brand {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+}
+
+.sidebar-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 4px rgba(198, 139, 42, 0.35));
+}
+
+.sidebar-title {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+
+.sidebar-section-label {
+  padding: 0.625rem 0.75rem 0.2rem;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.blocks-palette {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.4rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* =============================================================
+   Bloque en paleta (miniatura arrastrable)
+   ============================================================= */
+
+.palette-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  border-radius: 5px;
+  cursor: grab;
+  border: 1px solid transparent;
+  transition: box-shadow 0.15s ease, opacity 0.15s ease, border-color 0.15s ease;
+  user-select: none;
+}
+
+.palette-block:hover {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.palette-block:active {
+  cursor: grabbing;
+}
+
+.palette-block-stripe {
+  width: 3px;
+  min-width: 3px;
+  height: 14px;
+  border-radius: 2px;
+}
+
+.palette-block-label {
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  letter-spacing: -0.01em;
+}
+
+/* =============================================================
+   Main content
+   ============================================================= */
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background-color: var(--bg-canvas);
+}
+
+/* Toolbar */
+.toolbar {
+  height: 44px;
+  min-height: 44px;
+  background-color: var(--bg-main);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  gap: 0.5rem;
+}
+
+.toolbar-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-main);
+  margin-right: auto;
+}
+
+.toolbar-btn {
+  padding: 5px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  font-family: inherit;
+}
+
+.toolbar-btn:hover {
+  background: var(--bg-elevated);
+  border-color: var(--text-muted);
+}
+
+.toolbar-btn-primary {
+  background: var(--shiba-accent);
+  color: #0C0C0C;
+  border-color: var(--shiba-accent);
+}
+
+.toolbar-btn-primary:hover {
+  background: var(--shiba-accent-2);
+  border-color: var(--shiba-accent-2);
+}
+
+/* =============================================================
+   Workspace
+   ============================================================= */
+
+.workspace {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+/* =============================================================
+   Canvas
+   ============================================================= */
+
+.canvas-area {
+  flex: 1;
+  position: relative;
+  overflow-y: auto;
+  padding: 1.5rem;
+  transition: background-color 0.1s ease;
+}
+
+.canvas-area--over {
+  background-color: var(--bg-surface);
+}
+
+.canvas-empty-hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: var(--text-muted);
+  pointer-events: none;
+  user-select: none;
+}
+
+.canvas-empty-hint p {
+  font-size: 13px;
+  margin-top: 0.5rem;
+}
+
+.canvas-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* =============================================================
+   Bloques en el canvas
+   ============================================================= */
+
+.block-container {
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  position: relative;
+}
+
+.block-container:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.block-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+}
+
+.block-stripe {
+  width: 4px;
+  min-width: 4px;
+  height: 16px;
+  border-radius: 2px;
+  transition: width 0.15s ease;
+}
+
+.block-container:hover .block-stripe {
+  width: 6px;
+}
+
+.block-title {
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  letter-spacing: -0.01em;
+}
+
+.block-body {
+  padding: 6px 12px 10px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.block-drop-zone {
+  min-height: 28px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  color: var(--text-muted);
+}
+
+.block-input {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 11px;
+  width: 80px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.block-input:focus {
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+}
+
+.block-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.block-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.block-branch {
+  display: flex;
+  flex-direction: column;
+}
+
+.branch-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.block-drop-zone-inner {
+  min-height: 28px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  color: var(--text-muted);
+  padding: 10px;
+}
+
+.block-delete-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px 6px;
+  font-size: 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  opacity: 0;
+}
+
+.block-container:hover .block-delete-btn,
+.block-container:hover .block-move-btn {
+  opacity: 0.5;
+}
+
+.block-delete-btn:hover {
+  opacity: 1 !important;
+  color: #ff5252;
+  background: rgba(255, 82, 82, 0.15);
+}
+
+.block-move-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px 6px;
+  font-size: 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  opacity: 0;
+}
+
+.block-move-btn:hover {
+  opacity: 1 !important;
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.drop-placeholder {
+  opacity: 0.4;
+  font-size: 10px;
+}
+
+/* =============================================================
+   NestedDropZone — zona de drop para bloques anidados
+   ============================================================= */
+
+.nested-drop-zone {
+  width: 100%;
+  min-height: 36px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  color: var(--text-muted);
+  padding: 6px;
+  gap: 6px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.nested-drop-zone--over {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.2);
+  border-style: solid;
+}
+
+.nested-drop-zone--filled {
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+/* =============================================================
+   IfBlock — Estilos tipo Scratch
+   ============================================================= */
+
+.if-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.if-keyword {
+  color: var(--accent-if);
+  font-weight: 800;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 12px;
+}
+
+.if-paren {
+  color: rgba(255, 255, 255, 0.5);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.if-condition-input {
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.input-error {
+  border-color: #d32f2f !important;
+  background: rgba(211, 47, 47, 0.1) !important;
+}
+
+.input-error:focus {
+  box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.2) !important;
+}
+
+.if-body-section {
+  margin-bottom: 6px;
+}
+
+.if-branch-section {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 8px;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.if-branch-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.if-remove-btn {
+  margin-left: auto;
+  padding: 2px 6px !important;
+  font-size: 9px !important;
+  color: #d32f2f !important;
+  border-color: rgba(211, 47, 47, 0.3) !important;
+}
+
+.if-remove-btn:hover {
+  background: rgba(211, 47, 47, 0.15) !important;
+}
+
+.if-inline-error {
+  font-size: 9px;
+  color: #ef5350;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  padding: 2px 0;
+  opacity: 0.85;
+}
+
+.if-controls {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.if-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 5px 8px;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 9px;
+  line-height: 1.3;
+}
+
+.if-status-bar.status-valid {
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.25);
+  color: #81c784;
+}
+
+.if-status-bar.status-error {
+  background: rgba(211, 47, 47, 0.1);
+  border: 1px solid rgba(211, 47, 47, 0.25);
+  color: #ef5350;
+}
+
+.status-icon {
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.status-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status-state {
+  flex-shrink: 0;
+  opacity: 0.7;
+  font-weight: 600;
+}
+
+/* =============================================================
+   Scratch-style Block Titles
+   ============================================================= */
+
+.scratch-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.scratch-title-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.scratch-title-col .scratch-title-row {
+  gap: 6px;
+}
+
+.scratch-keyword {
+  font-weight: 800;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11.5px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  text-transform: none;
+}
+
+.scratch-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.45);
+  font-family: 'Inter', system-ui, sans-serif;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.scratch-input {
+  width: 90px;
+  border-radius: 10px;
+  padding: 3px 8px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 11px;
+}
+
+.scratch-input:focus {
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.06);
+}
+
+.scratch-input-sm {
+  width: 65px;
+}
+
+.scratch-select {
+  width: 72px;
+  border-radius: 10px;
+  padding: 3px 6px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23666' fill='none' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  padding-right: 20px;
+}
+
+.scratch-select:focus {
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.06);
+  outline: none;
+}
+
+/* =============================================================
+   Panel de codigo C++
+   ============================================================= */
+
+.code-panel {
+  width: 380px;
+  min-width: 280px;
+  background-color: var(--bg-main);
+  border-left: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.code-header {
+  padding: 0 1rem;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.editor-wrapper {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* =============================================================
+   Consola
+   ============================================================= */
+
+.console-panel {
+  height: 140px;
+  min-height: 140px;
+  background-color: #080808;
+  color: #5DB870;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  padding: 0.75rem 1rem;
+  overflow-y: auto;
+  border-top: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.console-prompt {
+  color: var(--shiba-accent);
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+/* =============================================================
+   Scrollbars
+   ============================================================= */
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2A2A2A;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3A3A3A;
+}
+
+/* =============================================================
+   WelcomeScreen — Dark Premium
+   ============================================================= */
+
+.welcome-root {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: var(--bg-main);
+}
+
+/* --- Panel izquierdo: banner y descripcion ------------------------ */
+
+.welcome-left-panel {
+  position: relative;
+  width: 52%;
+  min-width: 340px;
+  background-color: #fefefe;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2.5rem;
+  border-right: 1px solid var(--border-subtle);
+}
+
+.welcome-left-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(198, 139, 42, 0.05) 0%, transparent 75%);
+  pointer-events: none;
+}
+
+.welcome-banner-wrapper {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+  z-index: 1;
+}
+
+.welcome-banner-img {
+  width: 100%;
+  max-height: 48vh;
+  object-fit: contain;
+}
+
+.welcome-description-box {
+  max-width: 520px;
+  text-align: center;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.welcome-desc-text {
+  font-size: 14px;
+  line-height: 1.65;
+  color: #444444;
+  font-weight: 500;
+}
+
+.welcome-tagline {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 12px;
+  font-style: italic;
+  color: #888888;
+  letter-spacing: 0.02em;
+}
+
+/* --- Panel derecho: info del proyecto ------------------------- */
+
+.welcome-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2.5rem 3rem 2.5rem 2.5rem;
+  overflow-y: auto;
+  background-color: var(--bg-main);
+  /* Linea decorativa izquierda sutil */
+  border-left: 1px solid var(--border-subtle);
+}
+
+/* Logo + nombre del proyecto */
+.welcome-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 0.5rem;
+}
+
+.welcome-logo {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 12px rgba(198, 139, 42, 0.35));
+}
+
+.welcome-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.welcome-title {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+.welcome-subtitle {
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
+/* Linea divisora */
+.welcome-divider {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 1.1rem 0;
+}
+
+/* Etiqueta de campo */
+.welcome-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+}
+
+/* Valor de campo */
+.welcome-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-main);
+  margin-bottom: 0.8rem;
+}
+
+.welcome-placeholder {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Lista de integrantes */
+.welcome-members {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 0.25rem;
+}
+
+.welcome-member-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  cursor: default;
+}
+
+.welcome-member-item:hover {
+  background-color: var(--bg-elevated);
+  border-color: #333333;
+}
+
+.welcome-member-index {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  min-width: 20px;
+  flex-shrink: 0;
+}
+
+.welcome-member-name {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Boton principal */
+.welcome-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 0.5rem;
+  padding: 11px 26px;
+  background-color: var(--shiba-accent);
+  color: #0C0C0C;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: background-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+  align-self: flex-start;
+  box-shadow: 0 0 0 0 rgba(198, 139, 42, 0);
+}
+
+.welcome-btn:hover {
+  background-color: var(--shiba-accent-2);
+  box-shadow: 0 0 20px rgba(198, 139, 42, 0.3);
+  transform: translateY(-1px);
+}
+
+.welcome-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Responsive */
+@media (max-width: 720px) {
+  .welcome-root {
+    flex-direction: column;
+  }
+
+  .welcome-left-panel {
+    width: 100%;
+    min-height: 400px;
+    min-width: unset;
+    padding: 2rem 1.5rem;
+  }
+
+  .welcome-left-panel::after {
+    background:
+      radial-gradient(circle at center, rgba(198, 139, 42, 0.05) 0%, transparent 70%);
+  }
+
+  .welcome-info {
+    padding: 1.5rem;
+  }
+}
