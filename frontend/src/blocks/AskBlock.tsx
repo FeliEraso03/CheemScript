@@ -3,14 +3,14 @@ import { BaseBlock } from './BaseBlock';
 import { useAST } from '../context/ASTContext';
 import { esString, validarNombreVariable } from '../automata/afd_var_infer';
 
-interface InputBlockProps {
+interface AskBlockProps {
   id: string;
   onDelete?: () => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
 }
 
-export const InputBlock: React.FC<InputBlockProps> = ({ id, onDelete, onMoveUp, onMoveDown }) => {
+export const AskBlock: React.FC<AskBlockProps> = ({ id, onDelete, onMoveUp, onMoveDown }) => {
   const { nodes, updateNodeData } = useAST();
   const node = nodes[id];
   if (!node) return null;
@@ -33,20 +33,20 @@ export const InputBlock: React.FC<InputBlockProps> = ({ id, onDelete, onMoveUp, 
       onMoveDown={onMoveDown}
       hasError={hasError}
       title={
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-          <span style={{ fontWeight: 800 }}>preguntar</span>
+        <div className="scratch-title-row">
+          <span className="scratch-keyword" style={{ color: 'var(--accent-ask)' }}>preguntar</span>
           <input
             type="text"
-            className={`block-input ${!esQuestionValida ? 'input-error' : ''}`}
-            style={{ width: '120px', outline: !esQuestionValida ? '1px solid #ff4444' : undefined }}
-            placeholder='"¿Cómo te llamas?"'
+            className={`block-input scratch-input ${!esQuestionValida ? 'input-error' : ''}`}
+            style={{ width: '140px', outline: !esQuestionValida ? '1px solid #ff4444' : undefined }}
+            placeholder='"Como te llamas?"'
             value={question}
             onChange={(e) => updateNodeData(id, { question: e.target.value })}
           />
-          <span style={{ fontWeight: 800 }}>y guardar en</span>
+          <span className="scratch-label">y guardar respuesta en</span>
           <input
             type="text"
-            className={`block-input ${!esVarValida ? 'input-error' : ''}`}
+            className={`block-input scratch-input ${!esVarValida ? 'input-error' : ''}`}
             style={{ width: '80px', outline: !esVarValida ? '1px solid #ff4444' : undefined }}
             placeholder="variable"
             value={variable}
@@ -64,7 +64,7 @@ export const InputBlock: React.FC<InputBlockProps> = ({ id, onDelete, onMoveUp, 
           )}
         </div>
       }
-      category="input"
+      category="ask"
     />
   );
 };

@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
+import { validarYInferirTipo } from '../automata/afd_var_infer';
+import type { InferredType } from '../automata/afd_var_infer';
 
 // Nodo normalizado para el estado de la UI
 export interface UINode {
@@ -8,9 +10,20 @@ export interface UINode {
   children: Record<string, string[]>; // Zonas de drop: { body: ['id1', 'id2'], elseBody: ['id3'] }
 }
 
+export interface VariableEntry {
+  name: string;
+  inferredType: InferredType;
+  blockId: string;
+  firstValue: string;
+  createdAt: number;
+}
+
 interface ASTContextState {
   nodes: Record<string, UINode>;
   rootNodes: string[];
+  variables: Record<string, VariableEntry>;
+  registerVariable: (blockId: string, name: string, value: string) => void;
+  unregisterVariable: (blockId: string) => void;
   addNode: (node: Omit<UINode, 'children'>, parentId?: string, zoneName?: string) => void;
   removeNode: (id: string, parentId?: string, zoneName?: string) => void;
   updateNodeData: (id: string, partialData: Record<string, any>) => void;
@@ -23,6 +36,31 @@ const ASTContext = createContext<ASTContextState | null>(null);
 export const ASTProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [nodes, setNodes] = useState<Record<string, UINode>>({});
   const [rootNodes, setRootNodes] = useState<string[]>([]);
+  const [variables, setVariables] = useState<Record<string, VariableEntry>>({});
+
+  const registerVariable = useCallback((blockId: string, name: string, value: string) => {
+    const inferredType = validarYInferirTipo(value);
+    const finalType: InferredType = inferredType === 'unknown' ? 'int' : inferredType;
+    if (inferredType === 'unknown') {
+      console.warn(`registerVariable[${blockId}]: No se pudo inferir tipo para "${value}", se usara int como fallback`);
+    }
+    setVariables(prev => ({
+      ...prev,
+      [name]: { name, inferredType: finalType, blockId, firstValue: value, createdAt: Date.now() },
+    }));
+  }, []);
+
+  const unregisterVariable = useCallback((blockId: string) => {
+    setVariables(prev => {
+      const next = { ...prev };
+      for (const [key, entry] of Object.entries(next)) {
+        if (entry.blockId === blockId) {
+          delete next[key];
+        }
+      }
+      return next;
+    });
+  }, []);
 
   const addNode = useCallback((
     nodeInfo: Omit<UINode, 'children'>, 
@@ -87,6 +125,18 @@ export const ASTProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // or we can implement a recursive delete. Let's do a simple delete.
     setNodes(prev => {
       const newNodes = { ...prev };
+      const removed = prev[id];
+      if (removed?.type === 'var_new' || removed?.type === 'var' || removed?.type === 'list') {
+        setVariables(vPrev => {
+          const vNext = { ...vPrev };
+          for (const [key, entry] of Object.entries(vNext)) {
+            if (entry.blockId === id) {
+              delete vNext[key];
+            }
+          }
+          return vNext;
+        });
+      }
       delete newNodes[id];
       return newNodes;
     });
@@ -180,12 +230,15 @@ export const ASTProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const value = useMemo(() => ({
     nodes,
     rootNodes,
+    variables,
+    registerVariable,
+    unregisterVariable,
     addNode,
     removeNode,
     updateNodeData,
     moveNodeUp,
     moveNodeDown
-  }), [nodes, rootNodes, addNode, removeNode, updateNodeData, moveNodeUp, moveNodeDown]);
+  }), [nodes, rootNodes, variables, registerVariable, unregisterVariable, addNode, removeNode, updateNodeData, moveNodeUp, moveNodeDown]);
 
   return (
     <ASTContext.Provider value={value}>

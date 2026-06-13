@@ -1,9 +1,13 @@
-// Tipos de categorias de bloque para hacer type-safe el uso de CSS vars
-export type BlockCategory = 'if' | 'for' | 'while' | 'switch' | 'var' | 'arr' | 'mat' | 'print' | 'input' | 'sleep';
+import { validarYInferirTipo as _validarYInferir } from '../automata/afd_var_infer';
+
+export type BlockCategory = 'if' | 'for' | 'while' | 'switch' | 'var' | 'arr' | 'mat' | 'print' | 'input' | 'sleep' | 'repeat' | 'repeatUntil' | 'say' | 'ask' | 'wait' | 'list' | 'var_new' | 'control' | 'data' | 'io' | 'time' | 'advanced';
 
 export type DataType = 'int' | 'float' | 'double' | 'char' | 'bool' | 'string';
 
-// Nodo base — todos los nodos del AST tienen id y type
+export type BlockShapeType = 'stack' | 'cap' | 'hat' | 'c-shape' | 'reporter' | 'boolean';
+
+export type InferredType = 'int' | 'float' | 'double' | 'char' | 'bool' | 'string' | 'unknown';
+
 export interface ASTNode {
   id: string;
   type: string;
@@ -70,8 +74,72 @@ export type CheemScriptNode =
   | WhileNode
   | SwitchNode;
 
-// Item del drag and drop
 export interface DragItem {
   type: 'BLOCK';
   blockType: string;
+}
+
+// Reporter blocks (oval/hexagonal) — se arrastran DENTRO de ExpressionSlots
+export interface ReporterDragItem {
+  type: 'BLOCK_REPORTER';
+  reporterType: string; // 'variable', 'number', 'string', 'add', 'sub', etc.
+  meta?: Record<string, any>;
+  text: string; // Texto que se inserta al soltar (ej: "x", "42", '"hola"')
+}
+
+export interface BooleanDragItem {
+  type: 'BLOCK_BOOLEAN';
+  reporterType: string;
+  meta?: Record<string, any>;
+  text: string;
+}
+
+// Expression tree node (para futuro anidamiento de reporters)
+export type ExprNode =
+  | { type: 'number'; value: string }
+  | { type: 'string'; value: string }
+  | { type: 'variable'; name: string }
+  | { type: 'add'; left: ExprNode; right: ExprNode }
+  | { type: 'sub'; left: ExprNode; right: ExprNode }
+  | { type: 'mul'; left: ExprNode; right: ExprNode }
+  | { type: 'div'; left: ExprNode; right: ExprNode }
+  | { type: 'mod'; left: ExprNode; right: ExprNode }
+  | { type: 'lt'; left: ExprNode; right: ExprNode }
+  | { type: 'eq'; left: ExprNode; right: ExprNode }
+  | { type: 'gt'; left: ExprNode; right: ExprNode }
+  | { type: 'and'; left: ExprNode; right: ExprNode }
+  | { type: 'or'; left: ExprNode; right: ExprNode }
+  | { type: 'not'; child: ExprNode }
+  | { type: 'random'; min: ExprNode; max: ExprNode }
+  | { type: 'join'; left: ExprNode; right: ExprNode }
+  | { type: 'length'; child: ExprNode }
+  | { type: 'listItem'; list: string; index: ExprNode }
+  | { type: 'listLength'; list: string }
+  | { type: 'listContains'; list: string; value: ExprNode };
+
+export interface VariableSelectorItem {
+  name: string;
+  label: string;
+  type: string;
+}
+
+export function buildVariableOptions(variables: Record<string, VariableInfo> | undefined): VariableSelectorItem[] {
+  if (!variables) return [];
+  return Object.values(variables).map(v => ({
+    name: v.name,
+    label: `${v.name} (${v.inferredType})`,
+    type: v.inferredType,
+  }));
+}
+
+export interface VariableInfo {
+  name: string;
+  inferredType: InferredType;
+  firstValue: string;
+  blockId: string;
+  createdAt: number;
+}
+
+export function inferTypeFromValue(val: string): InferredType {
+  return _validarYInferir(val);
 }

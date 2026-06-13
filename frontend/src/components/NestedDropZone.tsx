@@ -11,18 +11,19 @@ import { MatrixBlock } from '../blocks/MatrixBlock';
 import { PrintBlock } from '../blocks/PrintBlock';
 import { InputBlock } from '../blocks/InputBlock';
 import { SleepBlock } from '../blocks/SleepBlock';
+import { RepeatBlock } from '../blocks/RepeatBlock';
+import { RepeatUntilBlock } from '../blocks/RepeatUntilBlock';
+import { SayBlock } from '../blocks/SayBlock';
+import { AskBlock } from '../blocks/AskBlock';
+import { WaitBlock } from '../blocks/WaitBlock';
+import { ListBlock } from '../blocks/ListBlock';
+import { VarBlockNew } from '../blocks/VarBlockNew';
+import { SetVarBlock } from '../blocks/SetVarBlock';
+import { ChangeVarBlock } from '../blocks/ChangeVarBlock';
+import { ShowVarBlock } from '../blocks/ShowVarBlock';
 import { useAST } from '../context/ASTContext';
 
-// Mapa de tipo de bloque -> componente React (evaluado perezosamente para evitar dependencias circulares)
-const getBlockComponentMap = (): Record<
-  string, 
-  React.FC<{ 
-    id: string; 
-    onDelete?: () => void; 
-    onMoveUp?: () => void; 
-    onMoveDown?: () => void;
-  }>
-> => ({
+const getBlockComponentMap = (): Record<string, React.FC<{ id: string; onDelete?: () => void; onMoveUp?: () => void; onMoveDown?: () => void }>> => ({
   if:     IfBlock,
   for:    ForBlock,
   while:  WhileBlock,
@@ -33,6 +34,16 @@ const getBlockComponentMap = (): Record<
   print:  PrintBlock,
   input:  InputBlock,
   sleep:  SleepBlock,
+  repeat: RepeatBlock,
+  repeatUntil: RepeatUntilBlock,
+  say:    SayBlock,
+  ask:    AskBlock,
+  wait:   WaitBlock,
+  list:   ListBlock,
+  var_new: VarBlockNew,
+  set_var: SetVarBlock,
+  change_var: ChangeVarBlock,
+  show_var: ShowVarBlock,
 });
 
 function generateId(): string {
