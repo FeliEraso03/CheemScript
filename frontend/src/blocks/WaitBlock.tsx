@@ -1,13 +1,23 @@
 import React from 'react';
 import { BaseBlock } from './BaseBlock';
 import { useAST } from '../context/ASTContext';
-import { validarAmount } from '../automata/afd_var_infer';
+import { validarAmount, esEntero, esDouble } from '../automata/afd_var_infer';
 
 interface WaitBlockProps {
   id: string;
   onDelete?: () => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
+}
+
+function validarDuration(raw: string) {
+  const base = validarAmount(raw);
+  if (!base.valid) return base;
+  if (esEntero(raw).valid && parseInt(raw.trim(), 10) <= 0)
+    return { valid: false, mensaje: 'La duración debe ser mayor a 0' };
+  if (esDouble(raw).valid && parseFloat(raw.trim()) <= 0)
+    return { valid: false, mensaje: 'La duración debe ser mayor a 0' };
+  return base;
 }
 
 export const WaitBlock: React.FC<WaitBlockProps> = ({ id, onDelete, onMoveUp, onMoveDown }) => {
@@ -18,7 +28,7 @@ export const WaitBlock: React.FC<WaitBlockProps> = ({ id, onDelete, onMoveUp, on
   const duration = node.data.duration ?? '';
   const unit = node.data.unit ?? 's';
 
-  const validationDuration = validarAmount(duration);
+  const validationDuration = validarDuration(duration);
   const esValidoDuration = validationDuration.valid;
 
   return (

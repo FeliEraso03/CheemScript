@@ -2,6 +2,7 @@ import React from 'react';
 import { BaseBlock } from './BaseBlock';
 import { NestedDropZone } from '../components/NestedDropZone';
 import { useAST } from '../context/ASTContext';
+import { validarExpr } from '../automata/parser_expr';
 
 interface WhileBlockProps {
   id: string;
@@ -16,28 +17,40 @@ export const WhileBlock: React.FC<WhileBlockProps> = ({ id, onDelete, onMoveUp, 
   if (!node) return null;
 
   const condition = node.data.condition ?? '';
+  const resultado = validarExpr(condition);
+  const esValido = condition === '' || resultado.valid;
 
   return (
-    <BaseBlock
-      onDelete={onDelete}
-      onMoveUp={onMoveUp}
-      onMoveDown={onMoveDown}
-      title={
-        <div className="scratch-title-row">
-          <span className="scratch-keyword" style={{ color: 'var(--accent-while)' }}>repetir mientras</span>
-          <input
-            type="text"
-            className="block-input scratch-input"
-            placeholder="x < 10"
-            value={condition}
-            onChange={(e) => updateNodeData(id, { condition: e.target.value })}
-          />
-          <span className="scratch-label">sea verdadero</span>
+    <div className="while-block-group" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      <BaseBlock
+        onDelete={onDelete}
+        onMoveUp={onMoveUp}
+        onMoveDown={onMoveDown}
+        title={
+          <div className="scratch-title-row">
+            <span className="scratch-keyword" style={{ color: 'var(--accent-while)' }}>repetir mientras</span>
+            <input
+              type="text"
+              className={`block-input scratch-input ${!esValido ? 'input-error' : ''}`}
+              placeholder="x < 10"
+              value={condition}
+              onChange={(e) => updateNodeData(id, { condition: e.target.value })}
+            />
+            <span className="scratch-label">sea verdadero</span>
+          </div>
+        }
+        category="while"
+        hasError={!esValido}
+      >
+        <NestedDropZone parentId={id} zoneName="body" placeholder="Cuerpo del while: arrastra bloques aquí" />
+      </BaseBlock>
+
+      {!esValido && (
+        <div className="if-status-bar status-error">
+          <span className="status-icon">!!!</span>
+          <span className="status-text">{resultado.mensaje}</span>
         </div>
-      }
-      category="while"
-    >
-      <NestedDropZone parentId={id} zoneName="body" placeholder="Cuerpo del while: arrastra bloques aquí" />
-    </BaseBlock>
+      )}
+    </div>
   );
 };
