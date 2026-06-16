@@ -3,6 +3,8 @@ import { Sidebar } from './components/Sidebar';
 import { Canvas } from './components/Canvas';
 import { CodeView } from './components/CodeView';
 import { WelcomeScreen } from './components/WelcomeScreen';
+import { Toolbar } from './components/Toolbar';
+import { Console } from './components/Console';
 import './index.css';
 
 // Vista activa de la aplicacion
@@ -25,33 +27,11 @@ function App() {
         <Sidebar />
 
         <main className="main-content">
-          <header className="toolbar">
-            <span className="toolbar-title">CheemScript Editor</span>
-            <button 
-              className="toolbar-btn"
-              onClick={() => setIsCodeVisible(prev => !prev)}
-            >
-              {isCodeVisible ? 'Ocultar Código C++' : 'Mostrar Código C++'}
-            </button>
-            {isCodeVisible && (
-              <div style={{ display: 'flex', gap: '4px', marginLeft: '6px' }}>
-                <button 
-                  className="toolbar-btn"
-                  onClick={() => setCodePanelWidth(w => Math.max(280, w - 50))}
-                  title="Reducir panel"
-                >
-                  - Ancho
-                </button>
-                <button 
-                  className="toolbar-btn"
-                  onClick={() => setCodePanelWidth(w => Math.min(800, w + 50))}
-                  title="Aumentar panel"
-                >
-                  + Ancho
-                </button>
-              </div>
-            )}
-          </header>
+          <Toolbar 
+            isCodeVisible={isCodeVisible} 
+            setIsCodeVisible={setIsCodeVisible} 
+            setCodePanelWidth={setCodePanelWidth} 
+          />
 
           <div className="workspace">
             <Canvas />
@@ -64,10 +44,7 @@ function App() {
             )}
           </div>
 
-          <div className="console-panel">
-            <span className="console-prompt">&gt;</span>
-            Listo para compilar...
-          </div>
+          <Console />
         </main>
       </div>
     </ASTProvider>

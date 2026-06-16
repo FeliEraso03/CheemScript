@@ -20,7 +20,7 @@ function calcInferredLabel(value: string, blockId: string): string {
 }
 
 export const VarBlockNew: React.FC<VarBlockNewProps> = ({ id, onDelete, onMoveUp, onMoveDown }) => {
-  const { nodes, updateNodeData } = useAST();
+  const { nodes, updateNodeData, registerVariable } = useAST();
   const node = nodes[id];
   if (!node) return null;
 
@@ -29,6 +29,12 @@ export const VarBlockNew: React.FC<VarBlockNewProps> = ({ id, onDelete, onMoveUp
   const inferred = calcInferredLabel(value, id);
   const validationName = validarNombreVariable(name);
   const esNombreValido = validationName.valid;
+
+  React.useEffect(() => {
+    if (name && esNombreValido) {
+      registerVariable(id, name, value);
+    }
+  }, [id, name, value, esNombreValido, registerVariable]);
   
   const valueType = validarYInferirTipo(value);
   const esValorValido = valueType !== 'unknown';

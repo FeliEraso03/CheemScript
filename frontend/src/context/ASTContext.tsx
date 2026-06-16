@@ -18,10 +18,17 @@ export interface VariableEntry {
   createdAt: number;
 }
 
+export interface ConsoleStatus {
+  status: 'idle' | 'compiling' | 'success' | 'error';
+  text: string;
+}
+
 interface ASTContextState {
   nodes: Record<string, UINode>;
   rootNodes: string[];
   variables: Record<string, VariableEntry>;
+  consoleStatus: ConsoleStatus;
+  setConsoleStatus: (status: ConsoleStatus) => void;
   registerVariable: (blockId: string, name: string, value: string) => void;
   unregisterVariable: (blockId: string) => void;
   addNode: (node: Omit<UINode, 'children'>, parentId?: string, zoneName?: string) => void;
@@ -37,6 +44,7 @@ export const ASTProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [nodes, setNodes] = useState<Record<string, UINode>>({});
   const [rootNodes, setRootNodes] = useState<string[]>([]);
   const [variables, setVariables] = useState<Record<string, VariableEntry>>({});
+  const [consoleStatus, setConsoleStatus] = useState<ConsoleStatus>({ status: 'idle', text: 'Listo para compilar...' });
 
   const registerVariable = useCallback((blockId: string, name: string, value: string) => {
     const inferredType = validarYInferirTipo(value);
@@ -231,6 +239,8 @@ export const ASTProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     nodes,
     rootNodes,
     variables,
+    consoleStatus,
+    setConsoleStatus,
     registerVariable,
     unregisterVariable,
     addNode,
@@ -238,7 +248,7 @@ export const ASTProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     updateNodeData,
     moveNodeUp,
     moveNodeDown
-  }), [nodes, rootNodes, variables, registerVariable, unregisterVariable, addNode, removeNode, updateNodeData, moveNodeUp, moveNodeDown]);
+  }), [nodes, rootNodes, variables, consoleStatus, registerVariable, unregisterVariable, addNode, removeNode, updateNodeData, moveNodeUp, moveNodeDown]);
 
   return (
     <ASTContext.Provider value={value}>

@@ -11,7 +11,7 @@ interface VarBlockProps {
 }
 
 export const VarBlock: React.FC<VarBlockProps> = ({ id, onDelete, onMoveUp, onMoveDown }) => {
-  const { nodes, updateNodeData } = useAST();
+  const { nodes, updateNodeData, registerVariable } = useAST();
   const node = nodes[id];
   if (!node) return null;
 
@@ -20,6 +20,12 @@ export const VarBlock: React.FC<VarBlockProps> = ({ id, onDelete, onMoveUp, onMo
   const value = node.data.value ?? '';
   const validationName = validarNombreVariable(name);
   const esNombreValido = validationName.valid;
+
+  React.useEffect(() => {
+    if (name && esNombreValido) {
+      registerVariable(id, name, value);
+    }
+  }, [id, name, value, esNombreValido, registerVariable]);
   const validationVal = validarValorTipado(dataType, value);
   const esValorValido = validationVal.valid;
   const hasError = !esNombreValido || !esValorValido;
