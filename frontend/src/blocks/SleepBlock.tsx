@@ -44,7 +44,7 @@ export const SleepBlock: React.FC<SleepBlockProps> = ({ id, onDelete, onMoveUp, 
             type="text"
             className={`block-input scratch-input ${!esValido ? 'input-error' : ''}`}
             style={{
-              width: '80px',
+              width: '100px',
               outline: !esValido && duration !== ''
                 ? '1px solid #ff4444'
                 : esAdvertencia

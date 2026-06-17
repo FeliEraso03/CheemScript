@@ -6,6 +6,8 @@ interface BaseBlockProps {
   category: BlockCategory;
   children?: React.ReactNode;
   hasError?: boolean;
+  errorMessage?: string | null;
+  isActive?: boolean;
   onDelete?: () => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
@@ -16,30 +18,26 @@ export const BaseBlock: React.FC<BaseBlockProps> = ({
   category,
   children,
   hasError,
+  errorMessage,
+  isActive,
   onDelete,
   onMoveUp,
   onMoveDown
 }) => {
   return (
     <div
-      className={`block-container ${hasError ? 'block-error' : ''}`}
+      className={`block-container ${hasError ? 'block-error' : ''} ${isActive ? 'block-active-neon' : ''}`}
       style={{
-        background: `var(--bg-${category})`,
-        borderColor: hasError ? '#d32f2f' : `rgba(var(--accent-${category}-rgb, 0 0 0) / 0.35)`,
-        border: hasError ? '2px solid #d32f2f' : `1px solid color-mix(in srgb, var(--accent-${category}), transparent 60%)`,
-        boxShadow: hasError ? '0 0 8px rgba(211, 47, 47, 0.4)' : 'none'
-      }}
+        '--block-accent': `var(--accent-${category})`,
+        '--block-bg': `var(--bg-${category})`,
+      } as React.CSSProperties}
     >
-      <div className="block-header" style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div
-            className="block-stripe"
-            style={{ background: `var(--accent-${category})` }}
-          />
-          <span
-            className="block-title"
-            style={{ color: `var(--accent-${category})` }}
-          >
+      <div className="block-notch-top"></div>
+      
+      <div className="block-header">
+        <div className="block-title-wrapper">
+          <div className="block-stripe" />
+          <span className="block-title">
             {title}
           </span>
         </div>
@@ -74,6 +72,13 @@ export const BaseBlock: React.FC<BaseBlockProps> = ({
         </div>
       </div>
 
+      {errorMessage && (
+        <div className="block-error-banner" style={{ padding: '4px 12px', backgroundColor: 'rgba(255, 68, 68, 0.15)', color: '#ff6b6b', fontSize: '11px', fontFamily: '\"Fira Code\", monospace', borderTop: '1px solid rgba(255, 68, 68, 0.3)', borderBottom: children ? '1px solid rgba(255, 68, 68, 0.3)' : 'none', fontWeight: 500, lineHeight: 1.4 }}>
+          <span style={{ fontWeight: 'bold', marginRight: '6px' }}>!!!</span>
+          {errorMessage}
+        </div>
+      )}
+
       {children && (
         <div className="block-body">
           <div className="block-drop-zone">
@@ -81,6 +86,7 @@ export const BaseBlock: React.FC<BaseBlockProps> = ({
           </div>
         </div>
       )}
+      <div className="block-notch-bottom"></div>
     </div>
   );
 };

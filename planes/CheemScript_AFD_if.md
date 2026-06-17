@@ -42,16 +42,20 @@ una caja negra que devuelve un solo token: `EXPR`.
 ### Gramática de expresiones soportadas
 
 ```
-EXPR     ::= OR_EXPR
-OR_EXPR  ::= AND_EXPR  ( "||" AND_EXPR )*
-AND_EXPR ::= NOT_EXPR  ( "&&" NOT_EXPR )*
-NOT_EXPR ::= "!" NOT_EXPR
-           | ATOM
-ATOM     ::= ID OP_REL VALOR
-           | ID
-           | "(" OR_EXPR ")"
-OP_REL   ::= "<" | ">" | "<=" | ">=" | "==" | "!="
-VALOR    ::= NUMBER | STRING | BOOL | ID
+EXPR       ::= OR_EXPR
+OR_EXPR    ::= AND_EXPR   ( "||" AND_EXPR )*
+AND_EXPR   ::= NOT_EXPR   ( "&&" NOT_EXPR )*
+NOT_EXPR   ::= "!" NOT_EXPR
+             | REL_EXPR
+REL_EXPR   ::= ARITH_EXPR ( OP_REL ARITH_EXPR )?
+ARITH_EXPR ::= FACTOR     ( OP_ARITH FACTOR )*
+FACTOR     ::= "(" OR_EXPR ")"
+             | ID
+             | NUM
+             | STR
+             | BOOL
+OP_REL     ::= "<" | ">" | "<=" | ">=" | "==" | "!="
+OP_ARITH   ::= "+" | "-" | "*" | "/" | "%"
 ```
 
 Ejemplos válidos:

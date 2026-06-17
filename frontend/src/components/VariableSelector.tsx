@@ -1,6 +1,5 @@
 import React from 'react';
-import { useAST } from '../context/ASTContext';
-import { buildVariableOptions } from '../types/ast';
+import { AutocompleteInput } from './AutocompleteInput';
 
 interface VariableSelectorProps {
   value: string;
@@ -13,19 +12,12 @@ export const VariableSelector: React.FC<VariableSelectorProps> = ({
   onChange,
   placeholder = 'variable...',
 }) => {
-  const { variables } = useAST();
-  const options = buildVariableOptions(variables);
-
   return (
-    <select
-      className="scratch-select"
+    <AutocompleteInput
       value={value}
-      onChange={(e) => onChange(e.target.value)}
-    >
-      {!value && <option value="" disabled>{placeholder}</option>}
-      {options.map(opt => (
-        <option key={opt.name} value={opt.name}>{opt.label}</option>
-      ))}
-    </select>
+      onChange={onChange}
+      placeholder={placeholder}
+      isVariableOnly={true}
+    />
   );
 };

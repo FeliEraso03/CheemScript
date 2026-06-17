@@ -1,6 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import { useDrop } from 'react-dnd';
 import type { ReporterDragItem, BooleanDragItem } from '../types/ast';
+import { AutocompleteInput } from './AutocompleteInput';
 
 interface ExpressionSlotProps {
   value: string;
@@ -57,12 +58,11 @@ export const ExpressionSlot: React.FC<ExpressionSlotProps> = ({
           />
         </svg>
         <span className="block-boolean-content">
-          <input
-            type="text"
-            className={`block-input scratch-input scratch-input-sm ${className}`}
+          <AutocompleteInput
+            className={`${className}`}
             placeholder={placeholder}
             value={value}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(val) => onChange(val)}
           />
         </span>
       </span>
@@ -77,12 +77,11 @@ export const ExpressionSlot: React.FC<ExpressionSlotProps> = ({
         borderColor: isOver ? categoryColor || 'rgba(255,255,255,0.4)' : undefined,
       }}
     >
-      <input
-        type="text"
-        className={`block-input scratch-input scratch-input-sm ${className}`}
+      <AutocompleteInput
+        className={`${className}`}
         placeholder={placeholder}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(val) => onChange(val)}
       />
     </span>
   );

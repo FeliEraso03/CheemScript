@@ -3,6 +3,7 @@ import { BaseBlock } from './BaseBlock';
 import { useAST } from '../context/ASTContext';
 import { validarPrintValue } from '../automata/afd_print';
 import type { ValidacionPrint } from '../automata/afd_print';
+import { AutocompleteInput } from '../components/AutocompleteInput';
 
 interface PrintBlockProps {
   id: string;
@@ -32,24 +33,19 @@ export const PrintBlock: React.FC<PrintBlockProps> = ({ id, onDelete, onMoveUp, 
       onMoveUp={onMoveUp}
       onMoveDown={onMoveDown}
       hasError={!esValido}
+      errorMessage={!esValido && value !== '' ? (validacion?.mensaje ?? 'valor inválido') : null}
       title={
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div className="scratch-title-row">
           <span style={{ fontWeight: 800 }}>print</span>
           <span style={{ color: 'rgba(255,255,255,0.5)' }}>(</span>
-          <input
-            type="text"
-            className={`block-input ${!esValido ? 'input-error' : ''}`}
-            style={{ width: '140px' }}
+          <AutocompleteInput
+            className={`${!esValido ? 'input-error' : ''}`}
+            style={{ flex: 1, minWidth: '150px' }}
             placeholder='"hola" o variable'
             value={value}
-            onChange={(e) => updateNodeData(id, { value: e.target.value })}
+            onChange={(val) => updateNodeData(id, { value: val })}
           />
           <span style={{ color: 'rgba(255,255,255,0.5)' }}>)</span>
-          {!esValido && value !== '' && (
-            <span style={{ color: '#ff4444', fontSize: '11px', whiteSpace: 'nowrap' }}>
-              {validacion?.mensaje ?? 'valor inválido'}
-            </span>
-          )}
         </div>
       }
       category="print"

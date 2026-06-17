@@ -21,6 +21,7 @@ import { VarBlockNew } from '../blocks/VarBlockNew';
 import { SetVarBlock } from '../blocks/SetVarBlock';
 import { ChangeVarBlock } from '../blocks/ChangeVarBlock';
 import { ShowVarBlock } from '../blocks/ShowVarBlock';
+import { RandomBlock } from '../blocks/RandomBlock';
 import { useAST } from '../context/ASTContext';
 
 const BLOCK_COMPONENT_MAP: Record<string, React.FC<{ id: string; onDelete?: () => void; onMoveUp?: () => void; onMoveDown?: () => void }>> = {
@@ -44,6 +45,7 @@ const BLOCK_COMPONENT_MAP: Record<string, React.FC<{ id: string; onDelete?: () =
   set_var: SetVarBlock,
   change_var: ChangeVarBlock,
   show_var: ShowVarBlock,
+  random: RandomBlock,
 };
 
 // Genera un ID unico usando la API del navegador (mas robusto que Math.random)
@@ -103,13 +105,14 @@ export const Canvas: React.FC = () => {
           
           const BlockComponent = BLOCK_COMPONENT_MAP[node.type];
           return BlockComponent ? (
-            <BlockComponent 
-              key={node.id} 
-              id={node.id}
-              onDelete={() => removeNode(node.id)}
-              onMoveUp={index > 0 ? () => moveNodeUp(node.id) : undefined}
-              onMoveDown={index < rootNodes.length - 1 ? () => moveNodeDown(node.id) : undefined}
-            />
+            <div key={nodeId} id={`block-${nodeId}`} style={{ display: 'contents' }}>
+              <BlockComponent 
+                id={nodeId}
+                onDelete={() => removeNode(nodeId)}
+                onMoveUp={index > 0 ? () => moveNodeUp(nodeId) : undefined}
+                onMoveDown={index < rootNodes.length - 1 ? () => moveNodeDown(nodeId) : undefined}
+              />
+            </div>
           ) : null;
         })}
       </div>

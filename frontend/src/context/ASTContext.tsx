@@ -18,9 +18,23 @@ export interface VariableEntry {
   createdAt: number;
 }
 
-export interface ConsoleStatus {
-  status: 'idle' | 'compiling' | 'success' | 'error';
+export interface ConsoleLine {
+  type: 'stdout' | 'stderr' | 'stdin' | 'system';
   text: string;
+}
+
+export interface ConsoleStatus {
+  status: 'idle' | 'compiling' | 'running' | 'success' | 'error';
+  lines: ConsoleLine[];
+  isWaitingForInput: boolean;
+  sendInput?: (text: string) => void;
+  killProcess?: () => void;
+}
+
+export interface CheemsMessage {
+  id: string;
+  text: string;
+  type: 'speech' | 'error' | 'success';
 }
 
 interface ASTContextState {
@@ -28,12 +42,22 @@ interface ASTContextState {
   rootNodes: string[];
   variables: Record<string, VariableEntry>;
   consoleStatus: ConsoleStatus;
-  setConsoleStatus: (status: ConsoleStatus) => void;
+  cheemsMessages: CheemsMessage[];
+  blockErrors: Record<string, boolean>;
+  activeBlockId: string | null;
+  isTracingEnabled: boolean;
+  setConsoleStatus: React.Dispatch<React.SetStateAction<ConsoleStatus>>;
+  setActiveBlockId: React.Dispatch<React.SetStateAction<string | null>>;
+  setIsTracingEnabled: React.Dispatch<React.SetStateAction<boolean>>;
+  addCheemsMessage: (text: string, type: 'speech' | 'error' | 'success') => void;
+  clearCheemsMessages: () => void;
   registerVariable: (blockId: string, name: string, value: string) => void;
   unregisterVariable: (blockId: string) => void;
   addNode: (node: Omit<UINode, 'children'>, parentId?: string, zoneName?: string) => void;
   removeNode: (id: string, parentId?: string, zoneName?: string) => void;
   updateNodeData: (id: string, partialData: Record<string, any>) => void;
+  setNodeError: (id: string, hasError: boolean) => void;
+  loadState: (newNodes: Record<string, UINode>, newRootNodes: string[], newVariables: Record<string, VariableEntry>) => void;
   moveNodeUp: (id: string, parentId?: string, zoneName?: string) => void;
   moveNodeDown: (id: string, parentId?: string, zoneName?: string) => void;
 }
@@ -43,8 +67,58 @@ const ASTContext = createContext<ASTContextState | null>(null);
 export const ASTProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [nodes, setNodes] = useState<Record<string, UINode>>({});
   const [rootNodes, setRootNodes] = useState<string[]>([]);
-  const [variables, setVariables] = useState<Record<string, VariableEntry>>({});
-  const [consoleStatus, setConsoleStatus] = useState<ConsoleStatus>({ status: 'idle', text: 'Listo para compilar...' });
+  const [variablesByBlockId, setVariablesByBlockId] = useState<Record<string, VariableEntry>>({});
+  const variables = useMemo(() => {
+    const map: Record<string, VariableEntry> = {};
+    const entries = Object.values(variablesByBlockId).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+    for (const entry of entries) {
+      if (entry.name) {
+        map[entry.name] = entry;
+      }
+    }
+    return map;
+  }, [variablesByBlockId]);
+  const [consoleStatus, setConsoleStatus] = useState<ConsoleStatus>({ 
+    status: 'idle', 
+    lines: [{ type: 'system', text: 'Listo para compilar...' }],
+    isWaitingForInput: false
+  });
+  const [cheemsMessages, setCheemsMessages] = useState<CheemsMessage[]>([]);
+  const [blockErrors, setBlockErrors] = useState<Record<string, boolean>>({});
+  const [activeBlockId, setActiveBlockId] = useState<string | null>(null);
+  const [isTracingEnabled, setIsTracingEnabled] = useState<boolean>(true);
+
+  const setNodeError = useCallback((id: string, hasError: boolean) => {
+    setBlockErrors(prev => {
+      if (prev[id] === hasError) return prev;
+      return { ...prev, [id]: hasError };
+    });
+  }, []);
+
+  const addCheemsMessage = useCallback((text: string, type: 'speech' | 'error' | 'success') => {
+    if (!text.trim()) return;
+    const newMsg: CheemsMessage = { id: crypto.randomUUID(), text: text.trim(), type };
+    setCheemsMessages([newMsg]);
+  }, []);
+
+  const clearCheemsMessages = useCallback(() => {
+    setCheemsMessages([]);
+  }, []);
+
+  const loadState = useCallback((newNodes: Record<string, UINode>, newRootNodes: string[], newVariables: Record<string, VariableEntry>) => {
+    setNodes(newNodes);
+    setRootNodes(newRootNodes);
+    const variablesByBlock: Record<string, VariableEntry> = {};
+    for (const entry of Object.values(newVariables)) {
+      if (entry.blockId) {
+        variablesByBlock[entry.blockId] = entry;
+      }
+    }
+    setVariablesByBlockId(variablesByBlock);
+    setBlockErrors({});
+    setActiveBlockId(null);
+    clearCheemsMessages();
+  }, [clearCheemsMessages]);
 
   const registerVariable = useCallback((blockId: string, name: string, value: string) => {
     const inferredType = validarYInferirTipo(value);
@@ -52,20 +126,17 @@ export const ASTProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (inferredType === 'unknown') {
       console.warn(`registerVariable[${blockId}]: No se pudo inferir tipo para "${value}", se usara int como fallback`);
     }
-    setVariables(prev => ({
-      ...prev,
-      [name]: { name, inferredType: finalType, blockId, firstValue: value, createdAt: Date.now() },
-    }));
+    setVariablesByBlockId(prev => {
+      const next = { ...prev };
+      next[blockId] = { name, inferredType: finalType, blockId, firstValue: value, createdAt: prev[blockId]?.createdAt || Date.now() };
+      return next;
+    });
   }, []);
 
   const unregisterVariable = useCallback((blockId: string) => {
-    setVariables(prev => {
+    setVariablesByBlockId(prev => {
       const next = { ...prev };
-      for (const [key, entry] of Object.entries(next)) {
-        if (entry.blockId === blockId) {
-          delete next[key];
-        }
-      }
+      delete next[blockId];
       return next;
     });
   }, []);
@@ -135,13 +206,9 @@ export const ASTProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const newNodes = { ...prev };
       const removed = prev[id];
       if (removed?.type === 'var_new' || removed?.type === 'var' || removed?.type === 'list') {
-        setVariables(vPrev => {
+        setVariablesByBlockId(vPrev => {
           const vNext = { ...vPrev };
-          for (const [key, entry] of Object.entries(vNext)) {
-            if (entry.blockId === id) {
-              delete vNext[key];
-            }
-          }
+          delete vNext[id];
           return vNext;
         });
       }
@@ -240,15 +307,25 @@ export const ASTProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     rootNodes,
     variables,
     consoleStatus,
+    cheemsMessages,
+    blockErrors,
+    activeBlockId,
+    isTracingEnabled,
     setConsoleStatus,
+    setActiveBlockId,
+    setIsTracingEnabled,
+    addCheemsMessage,
+    clearCheemsMessages,
     registerVariable,
     unregisterVariable,
     addNode,
     removeNode,
     updateNodeData,
+    setNodeError,
+    loadState,
     moveNodeUp,
     moveNodeDown
-  }), [nodes, rootNodes, variables, consoleStatus, registerVariable, unregisterVariable, addNode, removeNode, updateNodeData, moveNodeUp, moveNodeDown]);
+  }), [nodes, rootNodes, variables, consoleStatus, cheemsMessages, blockErrors, activeBlockId, isTracingEnabled, setConsoleStatus, addCheemsMessage, clearCheemsMessages, registerVariable, unregisterVariable, addNode, removeNode, updateNodeData, setNodeError, loadState, moveNodeUp, moveNodeDown]);
 
   return (
     <ASTContext.Provider value={value}>

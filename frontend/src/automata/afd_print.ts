@@ -112,20 +112,21 @@ export function afd_string(raw: string): boolean {
 // AFD 2 — Identificador (variable)
 // ---------------------------------------------------------------------------
 
-type TokenId = { tipo: 'LETRA' } | { tipo: 'DIGITO' };
-type EstadoId = 'i0' | 'i_id' | 'iERR';
+type TokenId = { tipo: 'LETRA' } | { tipo: 'DIGITO' } | { tipo: 'BRACKET_A' } | { tipo: 'BRACKET_C' } | { tipo: 'OTRO' };
+type EstadoId = 'i0' | 'i_id' | 'i_bracket_a' | 'i_idx' | 'i_bracket_c' | 'iERR';
 
 function tokenizeId(raw: string): TokenId[] {
   return Array.from(raw).map(c => {
     if (/[a-zA-Z_]/.test(c)) return { tipo: 'LETRA' as const };
     if (/[0-9]/.test(c))     return { tipo: 'DIGITO' as const };
-    // Carácter inválido — lo marcamos como DIGITO para que falle en i0
-    return { tipo: 'DIGITO' as const };
+    if (c === '[')           return { tipo: 'BRACKET_A' as const };
+    if (c === ']')           return { tipo: 'BRACKET_C' as const };
+    return { tipo: 'OTRO' as const };
   });
 }
 
 /**
- * AFD que valida un identificador: letra (letra | dígito | _)*
+ * AFD que valida un identificador o acceso a arreglo: letra (letra | dígito | _)* ('[' (letra | dígito)+ ']')?
  */
 export function afd_id(raw: string): boolean {
   if (raw.length === 0) return false;
@@ -138,14 +139,27 @@ export function afd_id(raw: string): boolean {
         estado = t.tipo === 'LETRA' ? 'i_id' : 'iERR';
         break;
       case 'i_id':
-        estado = (t.tipo === 'LETRA' || t.tipo === 'DIGITO') ? 'i_id' : 'iERR';
+        if (t.tipo === 'LETRA' || t.tipo === 'DIGITO') estado = 'i_id';
+        else if (t.tipo === 'BRACKET_A') estado = 'i_bracket_a';
+        else estado = 'iERR';
+        break;
+      case 'i_bracket_a':
+        estado = (t.tipo === 'LETRA' || t.tipo === 'DIGITO') ? 'i_idx' : 'iERR';
+        break;
+      case 'i_idx':
+        if (t.tipo === 'LETRA' || t.tipo === 'DIGITO') estado = 'i_idx';
+        else if (t.tipo === 'BRACKET_C') estado = 'i_bracket_c';
+        else estado = 'iERR';
+        break;
+      case 'i_bracket_c':
+        estado = 'iERR'; // no se permite nada despues de cerrar corchete
         break;
       case 'iERR':
         return false;
     }
   }
 
-  return estado === 'i_id';
+  return estado === 'i_id' || estado === 'i_bracket_c';
 }
 
 // ---------------------------------------------------------------------------
@@ -330,8 +344,29 @@ export function lexPrintValue(raw: string): LexPrintResult {
     if (/[a-zA-Z_]/.test(raw[i])) {
       let j = i;
       while (j < raw.length && /[a-zA-Z0-9_]/.test(raw[j])) j++;
+      
+      // Permitir acceso a arreglos
+      if (j < raw.length && raw[j] === '[') {
+        j++;
+        while (j < raw.length && raw[j] !== ']') j++;
+        if (j < raw.length && raw[j] === ']') j++;
+      }
+      
+      // Permitir llamadas a funciones
+      let isFunc = false;
+      if (j < raw.length && raw[j] === '(') {
+        isFunc = true;
+        j++;
+        let p = 1;
+        while (j < raw.length && p > 0) {
+          if (raw[j] === '(') p++;
+          else if (raw[j] === ')') p--;
+          j++;
+        }
+      }
+      
       const fragment = raw.substring(i, j);
-      if (!afd_id(fragment)) {
+      if (!isFunc && !afd_id(fragment)) {
         return { valid: false, tokens, rawParts, errorMsg: `Identificador inválido: ${fragment}` };
       }
       tokens.push('ID');

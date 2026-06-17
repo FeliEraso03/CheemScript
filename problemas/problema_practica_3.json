@@ -1,0 +1,213 @@
+{
+  "nodes": {
+    "var_new_1": {
+      "id": "var_new_1",
+      "type": "var_new",
+      "data": {
+        "name": "carga_cpu",
+        "value": "0.0"
+      },
+      "children": {}
+    },
+    "var_2": {
+      "id": "var_2",
+      "type": "var",
+      "data": {
+        "dataType": "int",
+        "name": "fallos_consecutivos",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "var_new_3": {
+      "id": "var_new_3",
+      "type": "var_new",
+      "data": {
+        "name": "respuesta_admin",
+        "value": "\"\""
+      },
+      "children": {}
+    },
+    "repeatUntil_4": {
+      "id": "repeatUntil_4",
+      "type": "repeatUntil",
+      "data": {
+        "condition": "fallos_consecutivos == 5"
+      },
+      "children": {
+        "body": [
+          "random_5",
+          "show_var_6",
+          "if_7",
+          "sleep_11"
+        ]
+      }
+    },
+    "random_5": {
+      "id": "random_5",
+      "type": "random",
+      "data": {
+        "variable": "carga_cpu",
+        "min": "30.0",
+        "max": "95.0",
+        "dataType": "double",
+        "decimals": "2"
+      },
+      "children": {}
+    },
+    "show_var_6": {
+      "id": "show_var_6",
+      "type": "show_var",
+      "data": {
+        "variable": "carga_cpu"
+      },
+      "children": {}
+    },
+    "if_7": {
+      "id": "if_7",
+      "type": "if",
+      "data": {
+        "condition": "carga_cpu > 80.0",
+        "elseIfs": [],
+        "hasElse": true
+      },
+      "children": {
+        "body": [
+          "change_var_8",
+          "say_9"
+        ],
+        "elseBody": [
+          "set_var_10"
+        ]
+      }
+    },
+    "change_var_8": {
+      "id": "change_var_8",
+      "type": "change_var",
+      "data": {
+        "variable": "fallos_consecutivos",
+        "amount": "1"
+      },
+      "children": {}
+    },
+    "say_9": {
+      "id": "say_9",
+      "type": "say",
+      "data": {
+        "value": "\"¡Alerta! Temperatura y carga elevadas.\"",
+        "duration": "1",
+        "unit": "s"
+      },
+      "children": {}
+    },
+    "set_var_10": {
+      "id": "set_var_10",
+      "type": "set_var",
+      "data": {
+        "variable": "fallos_consecutivos",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "sleep_11": {
+      "id": "sleep_11",
+      "type": "sleep",
+      "data": {
+        "duration": "150"
+      },
+      "children": {}
+    },
+    "print_12": {
+      "id": "print_12",
+      "type": "print",
+      "data": {
+        "value": "\"Alarma de sobrecarga activada. Ingrese 'OK' para reiniciar servidor: \""
+      },
+      "children": {}
+    },
+    "input_13": {
+      "id": "input_13",
+      "type": "input",
+      "data": {
+        "variable": "respuesta_admin",
+        "question": "\"\""
+      },
+      "children": {}
+    },
+    "if_14": {
+      "id": "if_14",
+      "type": "if",
+      "data": {
+        "condition": "respuesta_admin == \"OK\"",
+        "elseIfs": [],
+        "hasElse": false
+      },
+      "children": {
+        "body": [
+          "say_15",
+          "wait_16"
+        ]
+      }
+    },
+    "say_15": {
+      "id": "say_15",
+      "type": "say",
+      "data": {
+        "value": "\"Reiniciando servidor. Espere un momento...\"",
+        "duration": "3",
+        "unit": "s"
+      },
+      "children": {}
+    },
+    "wait_16": {
+      "id": "wait_16",
+      "type": "wait",
+      "data": {
+        "duration": "2",
+        "unit": "s"
+      },
+      "children": {}
+    },
+    "print_17": {
+      "id": "print_17",
+      "type": "print",
+      "data": {
+        "value": "\"Diagnóstico del servidor finalizado.\""
+      },
+      "children": {}
+    }
+  },
+  "rootNodes": [
+    "var_new_1",
+    "var_2",
+    "var_new_3",
+    "repeatUntil_4",
+    "print_12",
+    "input_13",
+    "if_14",
+    "print_17"
+  ],
+  "variables": {
+    "carga_cpu": {
+      "name": "carga_cpu",
+      "inferredType": "double",
+      "blockId": "var_new_1",
+      "firstValue": "0.0",
+      "createdAt": 1781663705576
+    },
+    "fallos_consecutivos": {
+      "name": "fallos_consecutivos",
+      "inferredType": "int",
+      "blockId": "var_2",
+      "firstValue": "0",
+      "createdAt": 1781663705576
+    },
+    "respuesta_admin": {
+      "name": "respuesta_admin",
+      "inferredType": "string",
+      "blockId": "var_new_3",
+      "firstValue": "\"\"",
+      "createdAt": 1781663705576
+    }
+  }
+}

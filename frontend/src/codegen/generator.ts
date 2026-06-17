@@ -1,36 +1,78 @@
-import type { UINode } from '../context/ASTContext';
+import type { UINode, VariableEntry } from '../context/ASTContext';
 import { printValueToCpp } from '../automata/afd_print';
 import { validarYInferirTipo } from '../automata/afd_var_infer';
 
-export function generateCppCode(nodes: Record<string, UINode>, rootNodes: string[]): string {
+export interface CodeGenResult {
+  code: string;
+  sourceMap: Record<string, number>;
+}
+
+export function generateCppCode(
+  nodes: Record<string, UINode>,
+  rootNodes: string[],
+  variables: Record<string, VariableEntry>,
+  isTracingEnabled: boolean = false
+): CodeGenResult {
   let code = '#include <iostream>\n';
   code += '#include <thread>\n';
   code += '#include <chrono>\n';
   code += '#include <vector>\n';
-  code += '#include <string>\n\n';
+  code += '#include <string>\n';
+  code += '#include <limits>\n';
+  code += '#include <random>\n';
+  code += '#include <cmath>\n\n';
   code += 'using namespace std;\n\n';
   code += 'int main() {\n';
+  code += '    random_device rd;\n';
+  code += '    mt19937 gen(rd());\n\n';
   
   if (rootNodes.length === 0) {
     code += '    // Código generado por CheemScript\n';
     code += '    // woof! woof!\n';
   } else {
     rootNodes.forEach(rootId => {
-      code += generateNodeCode(nodes, rootId, 1);
+      code += generateNodeCode(nodes, rootId, 1, variables, isTracingEnabled);
     });
   }
   
   code += '\n    return 0;\n';
   code += '}\n';
-  return code;
+
+  const sourceMap: Record<string, number> = {};
+  const lines = code.split('\n');
+  const finalLines: string[] = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const mapMatch = lines[i].match(/\/\/__MAP_(.+)/);
+    if (mapMatch) {
+      sourceMap[mapMatch[1]] = finalLines.length + 1;
+    } else {
+      finalLines.push(lines[i]);
+    }
+  }
+
+  return { code: finalLines.join('\n'), sourceMap };
 }
 
-function generateNodeCode(nodes: Record<string, UINode>, nodeId: string, indentLevel: number): string {
+function generateNodeCode(
+  nodes: Record<string, UINode>,
+  nodeId: string,
+  indentLevel: number,
+  variables: Record<string, VariableEntry>,
+  isTracingEnabled: boolean
+): string {
   const node = nodes[nodeId];
   if (!node) return '';
 
   const indent = '    '.repeat(indentLevel);
   let code = '';
+
+  // Always inject source map marker
+  code += `${indent}//__MAP_${nodeId}\n`;
+
+  if (isTracingEnabled) {
+    code += `${indent}cout << "__CHEEMS_TRACE__${nodeId}" << endl;\n`;
+  }
 
   switch (node.type) {
     case 'if': {
@@ -39,7 +81,7 @@ function generateNodeCode(nodes: Record<string, UINode>, nodeId: string, indentL
       
       const bodyIds = node.children['body'] || [];
       bodyIds.forEach(childId => {
-        code += generateNodeCode(nodes, childId, indentLevel + 1);
+        code += generateNodeCode(nodes, childId, indentLevel + 1, variables, isTracingEnabled);
       });
       
       const elseIfs = node.data.elseIfs || [];
@@ -47,7 +89,7 @@ function generateNodeCode(nodes: Record<string, UINode>, nodeId: string, indentL
         code += `${indent}} else if (${ei.condition || 'true'}) {\n`;
         const eiBodyIds = node.children[`elseIf_${ei.id}`] || [];
         eiBodyIds.forEach(childId => {
-          code += generateNodeCode(nodes, childId, indentLevel + 1);
+          code += generateNodeCode(nodes, childId, indentLevel + 1, variables, isTracingEnabled);
         });
       });
 
@@ -55,7 +97,7 @@ function generateNodeCode(nodes: Record<string, UINode>, nodeId: string, indentL
         code += `${indent}} else {\n`;
         const elseBodyIds = node.children['elseBody'] || [];
         elseBodyIds.forEach(childId => {
-          code += generateNodeCode(nodes, childId, indentLevel + 1);
+          code += generateNodeCode(nodes, childId, indentLevel + 1, variables, isTracingEnabled);
         });
       }
       
@@ -69,7 +111,7 @@ function generateNodeCode(nodes: Record<string, UINode>, nodeId: string, indentL
       code += `${indent}for (${init}; ${condition}; ${increment}) {\n`;
       const bodyIds = node.children['body'] || [];
       bodyIds.forEach(childId => {
-        code += generateNodeCode(nodes, childId, indentLevel + 1);
+        code += generateNodeCode(nodes, childId, indentLevel + 1, variables, isTracingEnabled);
       });
       code += `${indent}}\n`;
       break;
@@ -79,7 +121,7 @@ function generateNodeCode(nodes: Record<string, UINode>, nodeId: string, indentL
       code += `${indent}while (${condition}) {\n`;
       const bodyIds = node.children['body'] || [];
       bodyIds.forEach(childId => {
-        code += generateNodeCode(nodes, childId, indentLevel + 1);
+        code += generateNodeCode(nodes, childId, indentLevel + 1, variables, isTracingEnabled);
       });
       code += `${indent}}\n`;
       break;
@@ -87,16 +129,46 @@ function generateNodeCode(nodes: Record<string, UINode>, nodeId: string, indentL
     case 'switch': {
       const variable = node.data.variable ?? 'val';
       code += `${indent}switch (${variable}) {\n`;
-      const bodyIds = node.children['body'] || [];
-      bodyIds.forEach(childId => {
-        code += generateNodeCode(nodes, childId, indentLevel + 1);
+      const cases = node.data.cases || [];
+      const hasDefault = node.data.hasDefault || false;
+
+      cases.forEach((c: any) => {
+        code += `${indent}  case ${c.value}:\n`;
+        const caseBodyIds = node.children[`case_${c.id}`] || [];
+        if (caseBodyIds.length > 0) {
+          code += `${indent}  {\n`;
+          caseBodyIds.forEach((childId: string) => {
+            code += generateNodeCode(nodes, childId, indentLevel + 2, variables, isTracingEnabled);
+          });
+          code += `${indent}    break;\n`;
+          code += `${indent}  }\n`;
+        } else {
+          code += `${indent}    break;\n`;
+        }
       });
+
+      if (hasDefault) {
+        code += `${indent}  default:\n`;
+        const defBodyIds = node.children['default'] || [];
+        if (defBodyIds.length > 0) {
+          code += `${indent}  {\n`;
+          defBodyIds.forEach((childId: string) => {
+            code += generateNodeCode(nodes, childId, indentLevel + 2, variables, isTracingEnabled);
+          });
+          code += `${indent}    break;\n`;
+          code += `${indent}  }\n`;
+        } else {
+          code += `${indent}    break;\n`;
+        }
+      }
+
       code += `${indent}}\n`;
       break;
     }
     case 'var': {
-      const dataType = node.data.dataType ?? 'int';
       const name = node.data.name ?? 'x';
+      const variableDef = variables[name];
+      const dataType = node.data.dataType ?? variableDef?.inferredType ?? 'int';
       const val = node.data.value ?? '0';
       let formattedVal = val;
       if (dataType === 'string' && !val.startsWith('"') && !val.endsWith('"')) {
@@ -106,7 +178,7 @@ function generateNodeCode(nodes: Record<string, UINode>, nodeId: string, indentL
       break;
     }
     case 'arr': {
-      const dataType = node.data.dataType ?? 'int';
+      const dataType = node.data.dataType ?? node.data.type ?? 'int';
       const name = node.data.name ?? 'arr';
       const size = node.data.size ?? '5';
       const values = node.data.values ?? '';
@@ -134,16 +206,23 @@ function generateNodeCode(nodes: Record<string, UINode>, nodeId: string, indentL
     case 'input': {
       const question = node.data.question ?? '';
       const variable = node.data.variable ?? '';
+      const isString = variables[variable]?.inferredType === 'string';
       code += `${indent}cout << ${question};\n`;
-      code += `${indent}cin >> ${variable};\n`;
+      if (isString) {
+        code += `${indent}cin.ignore(numeric_limits<streamsize>::max(), '\\n');\n`;
+        code += `${indent}getline(cin, ${variable});\n`;
+      } else {
+        code += `${indent}cin >> ${variable};\n`;
+      }
       break;
     }
     case 'repeat': {
       const count = node.data.count ?? '10';
-      code += `${indent}for (int _i_${nodeId.replace(/-/g, '_')} = 0; _i_${nodeId.replace(/-/g, '_')} < ${count}; _i_${nodeId.replace(/-/g, '_')}++) {\n`;
+      const iter = node.data.iterator?.trim() || 'i';
+      code += `${indent}for (int ${iter} = 0; ${iter} < ${count}; ${iter}++) {\n`;
       const bodyIds = node.children['body'] || [];
       bodyIds.forEach(childId => {
-        code += generateNodeCode(nodes, childId, indentLevel + 1);
+        code += generateNodeCode(nodes, childId, indentLevel + 1, variables, isTracingEnabled);
       });
       code += `${indent}}\n`;
       break;
@@ -153,7 +232,7 @@ function generateNodeCode(nodes: Record<string, UINode>, nodeId: string, indentL
       code += `${indent}while (!(${conditionRU})) {\n`;
       const bodyIdsRU = node.children['body'] || [];
       bodyIdsRU.forEach(childId => {
-        code += generateNodeCode(nodes, childId, indentLevel + 1);
+        code += generateNodeCode(nodes, childId, indentLevel + 1, variables, isTracingEnabled);
       });
       code += `${indent}}\n`;
       break;
@@ -161,16 +240,28 @@ function generateNodeCode(nodes: Record<string, UINode>, nodeId: string, indentL
     case 'say': {
       const valSay = node.data.value ?? '';
       const durSay = node.data.duration ?? '2';
+      const unitSay = node.data.unit ?? 's';
       const cppValSay = printValueToCpp(valSay);
       code += `${indent}cout << ${cppValSay} << endl;\n`;
-      code += `${indent}this_thread::sleep_for(chrono::seconds(${durSay}));\n`;
+      if (unitSay === 's') {
+        code += `${indent}this_thread::sleep_for(chrono::seconds(${durSay}));\n`;
+      } else {
+        code += `${indent}this_thread::sleep_for(chrono::milliseconds(${durSay}));\n`;
+      }
+      code += `${indent}cout << "__CHEEMS_CLEAR__" << endl;\n`;
       break;
     }
     case 'ask': {
       const qAsk = node.data.question ?? '';
       const varAsk = node.data.variable ?? 'respuesta';
+      const isStringAsk = variables[varAsk]?.inferredType === 'string';
       code += `${indent}cout << ${qAsk} << endl;\n`;
-      code += `${indent}cin >> ${varAsk};\n`;
+      if (isStringAsk) {
+        code += `${indent}cin.ignore(numeric_limits<streamsize>::max(), '\\n');\n`;
+        code += `${indent}getline(cin, ${varAsk});\n`;
+      } else {
+        code += `${indent}cin >> ${varAsk};\n`;
+      }
       break;
     }
     case 'wait': {
@@ -231,6 +322,23 @@ function generateNodeCode(nodes: Record<string, UINode>, nodeId: string, indentL
     case 'show_var': {
       const svName = node.data.variable ?? '';
       code += `${indent}cout << ${svName} << endl;\n`;
+      break;
+    }
+    case 'random': {
+      const varName = node.data.variable ?? '';
+      const min = node.data.min ?? '1';
+      const max = node.data.max ?? '100';
+      const dataType = node.data.dataType ?? 'int';
+      const decimals = node.data.decimals ?? '2';
+
+      if (dataType === 'int') {
+        code += `${indent}uniform_int_distribution<int> dist(${min}, ${max});\n`;
+        code += `${indent}${varName} = dist(gen);\n`;
+      } else {
+        code += `${indent}uniform_real_distribution<double> dist(${min}, ${max});\n`;
+        code += `${indent}double raw = dist(gen);\n`;
+        code += `${indent}${varName} = round(raw * pow(10, ${decimals})) / pow(10, ${decimals});\n`;
+      }
       break;
     }
     default:

@@ -1,4 +1,6 @@
 import { afd_string, afd_id } from './afd_print';
+import { validarExpr } from './dpda_expr';
+import { tokenizeExpr } from './lexer_expr';
 
 export type InferredType = 'int' | 'double' | 'bool' | 'string' | 'char' | 'unknown';
 export type TipoExplicito = 'int' | 'float' | 'double' | 'char' | 'bool' | 'string';
@@ -68,20 +70,18 @@ const MSG_DOUBLE: Record<EstadoDouble, string> = {
 
 type EstadoBool =
   | 'b0'
-  | 'bt1' | 'bt2' | 'bt3' | 'bt4'
-  | 'bf1' | 'bf2' | 'bf3' | 'bf4' | 'bf5'
+  | 'bt1' | 'bt2' | 'bt3'
+  | 'bf1' | 'bf2' | 'bf3' | 'bf4'
   | 'b_ok' | 'bERR';
 const MSG_BOOL: Record<EstadoBool, string> = {
   'b0':   'Esperando letra "t" o "f"',
   'bt1':  'Esperando letra "r" para secuencia "true"',
   'bt2':  'Esperando letra "u" para secuencia "true"',
   'bt3':  'Esperando letra "e" para secuencia "true"',
-  'bt4':  'Secuencia "true" completa',
   'bf1':  'Esperando letra "a" para secuencia "false"',
   'bf2':  'Esperando letra "l" para secuencia "false"',
   'bf3':  'Esperando letra "s" para secuencia "false"',
   'bf4':  'Esperando letra "e" para secuencia "false"',
-  'bf5':  'Secuencia "false" completa',
   'b_ok': 'Valor booleano válido',
   'bERR': 'Sólo se acepta la palabra exacta "true" o "false"',
 };
@@ -287,12 +287,36 @@ function validarNombre(raw: string): boolean {
 // ── Validadores compuestos ────────────────────────────────────────────────────
 
 export function validarYInferirTipo(raw: string): InferredType {
-  if (raw.trim() === '') return 'unknown';
-  if (esBool(raw).valid)   return 'bool';
-  if (esChar(raw).valid)   return 'char';
-  if (esString(raw).valid) return 'string';
-  if (esDouble(raw).valid) return 'double';
-  if (esEntero(raw).valid) return 'int';
+  const trim = raw.trim();
+  if (trim === '') return 'unknown';
+  if (esBool(trim).valid)   return 'bool';
+  if (esChar(trim).valid)   return 'char';
+  if (esString(trim).valid) return 'string';
+  if (esDouble(trim).valid) return 'double';
+  if (esEntero(trim).valid) return 'int';
+
+  // Si no es un literal simple, ver si es una expresión válida (DPDA)
+  const exprVal = validarExpr(trim);
+  if (exprVal.valid) {
+    const lexRes = tokenizeExpr(trim);
+    if (lexRes.valid) {
+      // Si tiene operadores relacionales o lógicos, es bool
+      const tieneBool = lexRes.tokens.some(t => 
+        t.tipo === 'BOOL' || t.tipo === 'OP_REL' || t.tipo === 'OP_LOG' || t.tipo === 'NOT'
+      );
+      if (tieneBool) return 'bool';
+
+      // Si contiene comillas de string
+      const tieneString = lexRes.tokens.some(t => t.tipo === 'STR');
+      if (tieneString) return 'string';
+
+      // Si contiene algún número con punto decimal o float/double implícito
+      const tieneDouble = lexRes.tokens.some(t => t.tipo === 'NUM' && String(t.valor).includes('.'));
+      if (tieneDouble) return 'double';
+    }
+    // Por defecto, si es expresión aritmética simple (ej: x + 5), inferimos int
+    return 'int';
+  }
   return 'unknown';
 }
 
@@ -307,33 +331,42 @@ export function validarValorTipado(tipo: TipoExplicito, raw: string): ResultVali
     return { valid: false, mensaje: 'El valor no puede estar vacío' };
   }
   switch (tipo) {
-    case 'int':
+    case 'int': {
       const rInt = esEntero(raw);
-      return rInt.valid
-        ? { valid: true, mensaje: rInt.mensaje }
-        : { valid: false, mensaje: rInt.mensaje };
+      if (rInt.valid) return { valid: true, mensaje: rInt.mensaje };
+      const exprInt = validarExpr(raw);
+      if (exprInt.valid) return { valid: true, mensaje: 'Expresión válida' };
+      return { valid: false, mensaje: 'Debe ser un número entero o una expresión matemática válida' };
+    }
     case 'float':
-    case 'double':
+    case 'double': {
       const rDbl = esDouble(raw);
       const rIntD = esEntero(raw);
-      return (rDbl.valid || rIntD.valid)
-        ? { valid: true, mensaje: 'Número válido' }
-        : { valid: false, mensaje: 'No es un número válido (ej: 3.14 o 42)' };
-    case 'bool':
+      if (rDbl.valid || rIntD.valid) return { valid: true, mensaje: 'Número válido' };
+      const exprDbl = validarExpr(raw);
+      if (exprDbl.valid) return { valid: true, mensaje: 'Expresión válida' };
+      return { valid: false, mensaje: 'No es un número válido ni una expresión válida (ej: 3.14 o x + 1)' };
+    }
+    case 'bool': {
       const rBool = esBool(raw);
-      return rBool.valid
-        ? { valid: true, mensaje: rBool.mensaje }
-        : { valid: false, mensaje: rBool.mensaje };
-    case 'string':
+      if (rBool.valid) return { valid: true, mensaje: rBool.mensaje };
+      const exprBool = validarExpr(raw);
+      if (exprBool.valid) return { valid: true, mensaje: 'Expresión lógica válida' };
+      return { valid: false, mensaje: 'Debe ser true/false o una expresión lógica válida' };
+    }
+    case 'string': {
       const rStr = esString(raw);
-      return rStr.valid
-        ? { valid: true, mensaje: rStr.mensaje }
-        : { valid: false, mensaje: rStr.mensaje };
-    case 'char':
+      if (rStr.valid) return { valid: true, mensaje: rStr.mensaje };
+      const exprStr = validarExpr(raw);
+      if (exprStr.valid) return { valid: true, mensaje: 'Expresión de cadena válida' };
+      return { valid: false, mensaje: 'Debe ser una cadena válida o una expresión de cadena' };
+    }
+    case 'char': {
       const rChar = esChar(raw);
       return rChar.valid
         ? { valid: true, mensaje: rChar.mensaje }
         : { valid: false, mensaje: rChar.mensaje };
+    }
     default:
       return { valid: false, mensaje: 'Tipo desconocido' };
   }
@@ -368,7 +401,11 @@ export function validarAmount(raw: string): ResultValidation {
   if (nameVal.valid) {
     return { valid: true, mensaje: 'Variable válida' };
   }
-  return { valid: false, mensaje: 'Debe ser un número o una variable existente' };
+  const exprRes = validarExpr(s);
+  if (exprRes.valid) {
+    return { valid: true, mensaje: 'Expresión válida' };
+  }
+  return { valid: false, mensaje: 'Debe ser un número, una variable o una expresión matemática válida' };
 }
 
 // ── Validador: tamaño de arreglo/matriz ───────────────────────────────────────
@@ -437,5 +474,12 @@ export function validarValorAsignacion(raw: string): ResultValidation {
   if (nameVal.valid) {
     return { valid: true, mensaje: 'Variable válida' };
   }
-  return { valid: false, mensaje: 'Debe ser un literal válido o una variable existente' };
+  
+  // Si es una expresión aritmética o lógica (dpda_expr)
+  const exprRes = validarExpr(s);
+  if (exprRes.valid) {
+    return { valid: true, mensaje: 'Expresión válida' };
+  }
+
+  return { valid: false, mensaje: 'Debe ser un literal válido, una variable o una expresión matemática/lógica' };
 }

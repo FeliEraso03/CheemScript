@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BaseBlock } from './BaseBlock';
 import { NestedDropZone } from '../components/NestedDropZone';
 import { useAST } from '../context/ASTContext';
@@ -12,13 +12,23 @@ interface ForBlockProps {
 }
 
 export const ForBlock: React.FC<ForBlockProps> = ({ id, onDelete, onMoveUp, onMoveDown }) => {
-  const { nodes, updateNodeData } = useAST();
+  const { nodes, updateNodeData, registerVariable, unregisterVariable } = useAST();
   const node = nodes[id];
   if (!node) return null;
 
   const init = node.data.init ?? 'int i = 0';
   const condition = node.data.condition ?? 'i < 10';
   const increment = node.data.increment ?? 'i++';
+
+  useEffect(() => {
+    const match = init.match(/^\s*(?:int|float|double|string|char|auto|long)\s+([a-zA-Z_]\w*)\s*(?:=|$)/);
+    if (match) {
+      registerVariable(id, match[1], '0');
+    } else {
+      unregisterVariable(id);
+    }
+    return () => unregisterVariable(id);
+  }, [init, id, registerVariable, unregisterVariable]);
 
   const resultado = validarFor(init, condition, increment);
 
@@ -43,13 +53,13 @@ export const ForBlock: React.FC<ForBlockProps> = ({ id, onDelete, onMoveUp, onMo
   const errorMsg = getErrorMessage();
 
   return (
-    <div className="for-block-group" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-      <BaseBlock
+    <BaseBlock
         onDelete={onDelete}
         onMoveUp={onMoveUp}
         onMoveDown={onMoveDown}
         category="for"
         hasError={!allValid}
+        errorMessage={!allValid ? errorMsg : null}
         title={
           <div className="scratch-title-col">
             <div className="scratch-title-row">
@@ -86,14 +96,5 @@ export const ForBlock: React.FC<ForBlockProps> = ({ id, onDelete, onMoveUp, onMo
       >
         <NestedDropZone parentId={id} zoneName="body" placeholder="Cuerpo del for: arrastra bloques aquí" />
       </BaseBlock>
-
-      {!allValid && errorMsg && (
-        <div className="if-status-bar status-error">
-          <span className="status-icon">!!!</span>
-          <span className="status-text">{errorMsg}</span>
-        </div>
-      )}
-    </div>
   );
 };
-

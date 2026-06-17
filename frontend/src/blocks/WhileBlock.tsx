@@ -2,7 +2,8 @@ import React from 'react';
 import { BaseBlock } from './BaseBlock';
 import { NestedDropZone } from '../components/NestedDropZone';
 import { useAST } from '../context/ASTContext';
-import { validarExpr } from '../automata/parser_expr';
+import { validarExpr } from '../automata/dpda_expr';
+import { AutocompleteInput } from '../components/AutocompleteInput';
 
 interface WhileBlockProps {
   id: string;
@@ -21,36 +22,27 @@ export const WhileBlock: React.FC<WhileBlockProps> = ({ id, onDelete, onMoveUp, 
   const esValido = condition === '' || resultado.valid;
 
   return (
-    <div className="while-block-group" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-      <BaseBlock
+    <BaseBlock
         onDelete={onDelete}
         onMoveUp={onMoveUp}
         onMoveDown={onMoveDown}
         title={
           <div className="scratch-title-row">
             <span className="scratch-keyword" style={{ color: 'var(--accent-while)' }}>repetir mientras</span>
-            <input
-              type="text"
-              className={`block-input scratch-input ${!esValido ? 'input-error' : ''}`}
+            <AutocompleteInput
+              className={`${!esValido ? 'input-error' : ''}`}
               placeholder="x < 10"
               value={condition}
-              onChange={(e) => updateNodeData(id, { condition: e.target.value })}
+              onChange={(val) => updateNodeData(id, { condition: val })}
             />
             <span className="scratch-label">sea verdadero</span>
           </div>
         }
         category="while"
         hasError={!esValido}
+        errorMessage={!esValido ? resultado.mensaje : null}
       >
         <NestedDropZone parentId={id} zoneName="body" placeholder="Cuerpo del while: arrastra bloques aquí" />
       </BaseBlock>
-
-      {!esValido && (
-        <div className="if-status-bar status-error">
-          <span className="status-icon">!!!</span>
-          <span className="status-text">{resultado.mensaje}</span>
-        </div>
-      )}
-    </div>
   );
 };

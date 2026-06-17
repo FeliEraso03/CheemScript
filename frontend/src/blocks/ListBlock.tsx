@@ -11,7 +11,7 @@ interface ListBlockProps {
 }
 
 export const ListBlock: React.FC<ListBlockProps> = ({ id, onDelete, onMoveUp, onMoveDown }) => {
-  const { nodes, updateNodeData } = useAST();
+  const { nodes, updateNodeData, registerVariable } = useAST();
   const node = nodes[id];
   if (!node) return null;
 
@@ -20,6 +20,12 @@ export const ListBlock: React.FC<ListBlockProps> = ({ id, onDelete, onMoveUp, on
 
   const validationName = validarNombreVariable(name);
   const esNombreValido = validationName.valid;
+
+  React.useEffect(() => {
+    if (name && esNombreValido) {
+      registerVariable(id, name, values);
+    }
+  }, [id, name, values, esNombreValido, registerVariable]);
 
   const firstVal = values.split(',')[0]?.trim();
   const inferredType = firstVal ? validarYInferirTipo(firstVal) : null;
@@ -50,7 +56,7 @@ export const ListBlock: React.FC<ListBlockProps> = ({ id, onDelete, onMoveUp, on
           <input
             type="text"
             className={`block-input scratch-input ${!esValorValido ? 'input-error' : ''}`}
-            style={{ width: '140px', outline: !esValorValido ? '1px solid #ff4444' : undefined }}
+            style={{ width: '180px', outline: !esValorValido ? '1px solid #ff4444' : undefined }}
             placeholder="1, 2, 3"
             value={values}
             onChange={(e) => updateNodeData(id, { values: e.target.value })}

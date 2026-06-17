@@ -1,0 +1,224 @@
+{
+  "nodes": {
+    "arr_1": {
+      "id": "arr_1",
+      "type": "arr",
+      "data": {
+        "dataType": "double",
+        "name": "tanques_aux",
+        "size": "3",
+        "values": "15.5, 30.0, 45.5"
+      },
+      "children": {}
+    },
+    "list_2": {
+      "id": "list_2",
+      "type": "list",
+      "data": {
+        "name": "tanques_criticos",
+        "values": "1, 3"
+      },
+      "children": {}
+    },
+    "mat_3": {
+      "id": "mat_3",
+      "type": "mat",
+      "data": {
+        "dataType": "double",
+        "name": "matriz_combustible",
+        "rows": "2",
+        "cols": "2"
+      },
+      "children": {}
+    },
+    "var_new_4": {
+      "id": "var_new_4",
+      "type": "var_new",
+      "data": {
+        "name": "opcion_tanque",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "ask_5": {
+      "id": "ask_5",
+      "type": "ask",
+      "data": {
+        "variable": "opcion_tanque",
+        "question": "\"Ingrese tanque a analizar (1-Primario, 2-Secundario): \""
+      },
+      "children": {}
+    },
+    "switch_6": {
+      "id": "switch_6",
+      "type": "switch",
+      "data": {
+        "variable": "opcion_tanque",
+        "cases": [
+          {
+            "id": "c1",
+            "value": "1"
+          },
+          {
+            "id": "c2",
+            "value": "2"
+          }
+        ],
+        "hasDefault": true
+      },
+      "children": {
+        "case_c1": [
+          "set_var_7",
+          "print_8"
+        ],
+        "case_c2": [
+          "set_var_9",
+          "print_10"
+        ],
+        "default": [
+          "print_11"
+        ]
+      }
+    },
+    "set_var_7": {
+      "id": "set_var_7",
+      "type": "set_var",
+      "data": {
+        "variable": "matriz_combustible[0][0]",
+        "value": "100.0"
+      },
+      "children": {}
+    },
+    "print_8": {
+      "id": "print_8",
+      "type": "print",
+      "data": {
+        "value": "\"Tanque primario cargado al 100%.\""
+      },
+      "children": {}
+    },
+    "set_var_9": {
+      "id": "set_var_9",
+      "type": "set_var",
+      "data": {
+        "variable": "matriz_combustible[0][1]",
+        "value": "50.0"
+      },
+      "children": {}
+    },
+    "print_10": {
+      "id": "print_10",
+      "type": "print",
+      "data": {
+        "value": "\"Tanque secundario en reserva.\""
+      },
+      "children": {}
+    },
+    "print_11": {
+      "id": "print_11",
+      "type": "print",
+      "data": {
+        "value": "\"Opción de tanque inválida.\""
+      },
+      "children": {}
+    },
+    "for_12": {
+      "id": "for_12",
+      "type": "for",
+      "data": {
+        "init": "int j = 0",
+        "condition": "j < 3",
+        "increment": "j++"
+      },
+      "children": {
+        "body": [
+          "if_13"
+        ]
+      }
+    },
+    "if_13": {
+      "id": "if_13",
+      "type": "if",
+      "data": {
+        "condition": "tanques_aux[j] > 20.0",
+        "elseIfs": [],
+        "hasElse": false
+      },
+      "children": {
+        "body": [
+          "say_14",
+          "print_15"
+        ]
+      }
+    },
+    "say_14": {
+      "id": "say_14",
+      "type": "say",
+      "data": {
+        "value": "\"Compensando tanque auxiliar...\"",
+        "duration": "2",
+        "unit": "s"
+      },
+      "children": {}
+    },
+    "print_15": {
+      "id": "print_15",
+      "type": "print",
+      "data": {
+        "value": "\"Flujo liberado: \" + to_string(tanques_aux[j])"
+      },
+      "children": {}
+    },
+    "wait_16": {
+      "id": "wait_16",
+      "type": "wait",
+      "data": {
+        "duration": "2",
+        "unit": "s"
+      },
+      "children": {}
+    },
+    "print_17": {
+      "id": "print_17",
+      "type": "print",
+      "data": {
+        "value": "\"Secuencia de tanques calibrada.\""
+      },
+      "children": {}
+    }
+  },
+  "rootNodes": [
+    "arr_1",
+    "list_2",
+    "mat_3",
+    "var_new_4",
+    "ask_5",
+    "switch_6",
+    "for_12",
+    "wait_16",
+    "print_17"
+  ],
+  "variables": {
+    "tanques_aux": {
+      "name": "tanques_aux",
+      "inferredType": "double",
+      "blockId": "arr_1",
+      "firstValue": "15.5, 30.0, 45.5",
+      "createdAt": 1781663705576
+    },
+    "tanques_criticos": {
+      "name": "tanques_criticos",
+      "inferredType": "int",
+      "blockId": "list_2",
+      "firstValue": "1, 3",
+      "createdAt": 1781663705576
+    },
+    "opcion_tanque": {
+      "name": "opcion_tanque",
+      "inferredType": "int",
+      "blockId": "var_new_4",
+      "firstValue": "0",
+      "createdAt": 1781663705576
+    }
+  }
+}

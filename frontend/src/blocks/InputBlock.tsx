@@ -1,7 +1,8 @@
 import React from 'react';
 import { BaseBlock } from './BaseBlock';
 import { useAST } from '../context/ASTContext';
-import { esString, validarNombreVariable } from '../automata/afd_var_infer';
+import { esString } from '../automata/afd_var_infer';
+import { VariableSelector } from '../components/VariableSelector';
 
 interface InputBlockProps {
   id: string;
@@ -21,7 +22,7 @@ export const InputBlock: React.FC<InputBlockProps> = ({ id, onDelete, onMoveUp, 
   const validationQuestion = esString(question);
   const esQuestionValida = validationQuestion.valid;
 
-  const validationVar = validarNombreVariable(variable);
+  const validationVar = variable === '' ? { valid: false, mensaje: 'Debe seleccionar una variable' } : { valid: true, mensaje: 'Variable seleccionada' };
   const esVarValida = validationVar.valid;
 
   const hasError = !esQuestionValida || !esVarValida;
@@ -38,19 +39,16 @@ export const InputBlock: React.FC<InputBlockProps> = ({ id, onDelete, onMoveUp, 
           <input
             type="text"
             className={`block-input ${!esQuestionValida ? 'input-error' : ''}`}
-            style={{ width: '120px', outline: !esQuestionValida ? '1px solid #ff4444' : undefined }}
+            style={{ width: '160px', outline: !esQuestionValida ? '1px solid #ff4444' : undefined }}
             placeholder='"¿Cómo te llamas?"'
             value={question}
             onChange={(e) => updateNodeData(id, { question: e.target.value })}
           />
           <span style={{ fontWeight: 800 }}>y guardar en</span>
-          <input
-            type="text"
-            className={`block-input ${!esVarValida ? 'input-error' : ''}`}
-            style={{ width: '80px', outline: !esVarValida ? '1px solid #ff4444' : undefined }}
-            placeholder="variable"
+          <VariableSelector
             value={variable}
-            onChange={(e) => updateNodeData(id, { variable: e.target.value })}
+            onChange={(v) => updateNodeData(id, { variable: v })}
+            placeholder="variable..."
           />
           {!esQuestionValida && (
             <span style={{ color: '#ff4444', fontSize: '11px', whiteSpace: 'nowrap' }}>

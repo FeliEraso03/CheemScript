@@ -5,6 +5,7 @@ export type TokenExpr =
   | { tipo: 'BOOL'; valor: boolean }
   | { tipo: 'OP_REL'; valor: '<' | '>' | '<=' | '>=' | '==' | '!=' }
   | { tipo: 'OP_LOG'; valor: '&&' | '||' }
+  | { tipo: 'OP_ARITH'; valor: '+' | '-' | '*' | '/' | '%' }
   | { tipo: 'NOT' }
   | { tipo: 'PAREN_A' }
   | { tipo: 'PAREN_C' };
@@ -85,6 +86,13 @@ export function tokenizeExpr(input: string): LexerResult {
       continue;
     }
 
+    // Operadores Aritmeticos
+    if (char === '+' || char === '-' || char === '*' || char === '/' || char === '%') {
+      tokens.push({ tipo: 'OP_ARITH', valor: char as any });
+      i++;
+      continue;
+    }
+
     // Strings
     if (char === '"' || char === "'") {
       const comilla = char;
@@ -123,6 +131,35 @@ export function tokenizeExpr(input: string): LexerResult {
       while (i < input.length && /[a-zA-Z0-9_]/.test(input[i])) {
         idStr += input[i];
         i++;
+      }
+      
+      // Permitir acceso a arreglos, ej: arr[i]
+      if (i < input.length && input[i] === '[') {
+        idStr += input[i];
+        i++;
+        while (i < input.length && input[i] !== ']') {
+          idStr += input[i];
+          i++;
+        }
+        if (i < input.length && input[i] === ']') {
+          idStr += input[i];
+          i++;
+        } else {
+          return { valid: false, tokens, errorMsg: `Error lexico: Arreglo sin cerrar en "${idStr}"` };
+        }
+      }
+
+      // Permitir llamadas a funciones, ej: to_string(x)
+      if (i < input.length && input[i] === '(') {
+        idStr += input[i];
+        i++;
+        let openParen = 1;
+        while (i < input.length && openParen > 0) {
+          if (input[i] === '(') openParen++;
+          if (input[i] === ')') openParen--;
+          idStr += input[i];
+          i++;
+        }
       }
       
       if (idStr === 'true') {

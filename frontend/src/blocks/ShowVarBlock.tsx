@@ -24,6 +24,7 @@ export const ShowVarBlock: React.FC<ShowVarBlockProps> = ({ id, onDelete, onMove
       onMoveUp={onMoveUp}
       onMoveDown={onMoveDown}
       hasError={hasError}
+      errorMessage={hasError ? 'Debe seleccionar una variable' : null}
       title={
         <div className="scratch-title-row">
           <span className="scratch-keyword" style={{ color: 'var(--accent-var_new)' }}>mostrar</span>
@@ -32,11 +33,6 @@ export const ShowVarBlock: React.FC<ShowVarBlockProps> = ({ id, onDelete, onMove
             onChange={(v) => updateNodeData(id, { variable: v })}
             placeholder="variable..."
           />
-          {hasError && (
-            <span style={{ color: '#ff4444', fontSize: '11px', whiteSpace: 'nowrap' }}>
-              Debe seleccionar una variable
-            </span>
-          )}
         </div>
       }
       category="var_new"

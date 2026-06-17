@@ -55,7 +55,7 @@ export const MatrixBlock: React.FC<MatrixBlockProps> = ({ id, onDelete, onMoveUp
           <input
             type="text"
             className={`block-input ${!esNombreValido ? 'input-error' : ''}`}
-            style={{ width: '60px', outline: !esNombreValido ? '1px solid #ff4444' : undefined }}
+            style={{ width: '80px', outline: !esNombreValido ? '1px solid #ff4444' : undefined }}
             placeholder="mat"
             value={name}
             onChange={(e) => updateNodeData(id, { name: e.target.value })}
@@ -64,7 +64,7 @@ export const MatrixBlock: React.FC<MatrixBlockProps> = ({ id, onDelete, onMoveUp
           <input
             type="text"
             className={`block-input ${!esRowsValido ? 'input-error' : ''}`}
-            style={{ width: '30px', outline: !esRowsValido ? '1px solid #ff4444' : undefined }}
+            style={{ width: '50px', outline: !esRowsValido ? '1px solid #ff4444' : undefined }}
             placeholder="filas"
             value={rows}
             onChange={(e) => updateNodeData(id, { rows: e.target.value })}
@@ -73,7 +73,7 @@ export const MatrixBlock: React.FC<MatrixBlockProps> = ({ id, onDelete, onMoveUp
           <input
             type="text"
             className={`block-input ${!esColsValido ? 'input-error' : ''}`}
-            style={{ width: '30px', outline: !esColsValido ? '1px solid #ff4444' : undefined }}
+            style={{ width: '50px', outline: !esColsValido ? '1px solid #ff4444' : undefined }}
             placeholder="cols"
             value={cols}
             onChange={(e) => updateNodeData(id, { cols: e.target.value })}

@@ -31,6 +31,7 @@ export const ChangeVarBlock: React.FC<ChangeVarBlockProps> = ({ id, onDelete, on
       onMoveUp={onMoveUp}
       onMoveDown={onMoveDown}
       hasError={hasError}
+      errorMessage={!validationVar.valid ? validationVar.mensaje : (!validationAmount.valid ? validationAmount.mensaje : null)}
       title={
         <div className="scratch-title-row">
           <span className="scratch-keyword" style={{ color: 'var(--accent-var_new)' }}>cambiar</span>
@@ -46,16 +47,6 @@ export const ChangeVarBlock: React.FC<ChangeVarBlockProps> = ({ id, onDelete, on
             placeholder="N"
             categoryColor={validationAmount.valid ? 'var(--accent-var_new)' : '#ff4444'}
           />
-          {!validationVar.valid && (
-            <span style={{ color: '#ff4444', fontSize: '11px', whiteSpace: 'nowrap' }}>
-              {validationVar.mensaje}
-            </span>
-          )}
-          {!validationAmount.valid && (
-            <span style={{ color: '#ff4444', fontSize: '11px', whiteSpace: 'nowrap' }}>
-              {validationAmount.mensaje}
-            </span>
-          )}
         </div>
       }
       category="var_new"

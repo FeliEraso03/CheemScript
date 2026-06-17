@@ -1,0 +1,97 @@
+{
+  "nodes": {
+    "node_1": {
+      "id": "node_1",
+      "type": "say",
+      "data": {
+        "value": "\"I don't need to live forever\"",
+        "duration": "5500",
+        "unit": "ms"
+      }
+    },
+    "node_2": {
+      "id": "node_2",
+      "type": "say",
+      "data": {
+        "value": "\"As long as I can die in your arms\"",
+        "duration": "6000",
+        "unit": "ms"
+      }
+    },
+    "node_3": {
+      "id": "node_3",
+      "type": "say",
+      "data": {
+        "value": "\"I don't need a different planet\"",
+        "duration": "4000",
+        "unit": "ms"
+      }
+    },
+    "node_4": {
+      "id": "node_4",
+      "type": "say",
+      "data": {
+        "value": "\"Our love is staying right here with us\"",
+        "duration": "5000",
+        "unit": "ms"
+      }
+    },
+    "node_5": {
+      "id": "node_5",
+      "type": "say",
+      "data": {
+        "value": "\"The devil's on an Apollo mission\"",
+        "duration": "5000",
+        "unit": "ms"
+      }
+    },
+    "node_6": {
+      "id": "node_6",
+      "type": "say",
+      "data": {
+        "value": "\"So maybe we can hang out with God\"",
+        "duration": "6000",
+        "unit": "ms"
+      }
+    },
+    "node_7": {
+      "id": "node_7",
+      "type": "say",
+      "data": {
+        "value": "\"While everybody's going to Mars\"",
+        "duration": "5000",
+        "unit": "ms"
+      }
+    },
+    "node_8": {
+      "id": "node_8",
+      "type": "say",
+      "data": {
+        "value": "\"Everybody's going to Mars\"",
+        "duration": "3000",
+        "unit": "ms"
+      }
+    },
+    "node_9": {
+      "id": "node_9",
+      "type": "say",
+      "data": {
+        "value": "\"I wanna stay here with you\"",
+        "duration": "7000",
+        "unit": "ms"
+      }
+    }
+  },
+  "rootNodes": [
+    "node_1",
+    "node_2",
+    "node_3",
+    "node_4",
+    "node_5",
+    "node_6",
+    "node_7",
+    "node_8",
+    "node_9"
+  ],
+  "variables": {}
+}

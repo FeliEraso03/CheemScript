@@ -1,0 +1,1511 @@
+{
+  "nodes": {
+    "arr_1": {
+      "id": "arr_1",
+      "type": "arr",
+      "data": {
+        "name": "cedulas",
+        "type": "int",
+        "size": "100"
+      },
+      "children": {}
+    },
+    "arr_2": {
+      "id": "arr_2",
+      "type": "arr",
+      "data": {
+        "name": "nombres",
+        "type": "string",
+        "size": "100"
+      },
+      "children": {}
+    },
+    "arr_3": {
+      "id": "arr_3",
+      "type": "arr",
+      "data": {
+        "name": "edades",
+        "type": "int",
+        "size": "100"
+      },
+      "children": {}
+    },
+    "arr_4": {
+      "id": "arr_4",
+      "type": "arr",
+      "data": {
+        "name": "grados",
+        "type": "string",
+        "size": "100"
+      },
+      "children": {}
+    },
+    "arr_5": {
+      "id": "arr_5",
+      "type": "arr",
+      "data": {
+        "name": "nota1",
+        "type": "float",
+        "size": "100"
+      },
+      "children": {}
+    },
+    "arr_6": {
+      "id": "arr_6",
+      "type": "arr",
+      "data": {
+        "name": "nota2",
+        "type": "float",
+        "size": "100"
+      },
+      "children": {}
+    },
+    "arr_7": {
+      "id": "arr_7",
+      "type": "arr",
+      "data": {
+        "name": "nota3",
+        "type": "float",
+        "size": "100"
+      },
+      "children": {}
+    },
+    "arr_8": {
+      "id": "arr_8",
+      "type": "arr",
+      "data": {
+        "name": "promedios",
+        "type": "float",
+        "size": "100"
+      },
+      "children": {}
+    },
+    "arr_9": {
+      "id": "arr_9",
+      "type": "arr",
+      "data": {
+        "name": "estados",
+        "type": "string",
+        "size": "100"
+      },
+      "children": {}
+    },
+    "var_new_10": {
+      "id": "var_new_10",
+      "type": "var_new",
+      "data": {
+        "name": "totalEstudiantes",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "var_new_11": {
+      "id": "var_new_11",
+      "type": "var_new",
+      "data": {
+        "name": "opcion",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "var_new_12": {
+      "id": "var_new_12",
+      "type": "var_new",
+      "data": {
+        "name": "i",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "var_new_13": {
+      "id": "var_new_13",
+      "type": "var_new",
+      "data": {
+        "name": "buscarCed",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "var_new_14": {
+      "id": "var_new_14",
+      "type": "var_new",
+      "data": {
+        "name": "encontrado",
+        "value": "-1"
+      },
+      "children": {}
+    },
+    "var_new_15": {
+      "id": "var_new_15",
+      "type": "var_new",
+      "data": {
+        "name": "aprobados",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "var_new_16": {
+      "id": "var_new_16",
+      "type": "var_new",
+      "data": {
+        "name": "reprobados",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "var_new_17": {
+      "id": "var_new_17",
+      "type": "var_new",
+      "data": {
+        "name": "sumaPromedios",
+        "value": "0.0"
+      },
+      "children": {}
+    },
+    "var_new_18": {
+      "id": "var_new_18",
+      "type": "var_new",
+      "data": {
+        "name": "mejorProm",
+        "value": "-1.0"
+      },
+      "children": {}
+    },
+    "var_new_19": {
+      "id": "var_new_19",
+      "type": "var_new",
+      "data": {
+        "name": "peorProm",
+        "value": "6.0"
+      },
+      "children": {}
+    },
+    "var_new_20": {
+      "id": "var_new_20",
+      "type": "var_new",
+      "data": {
+        "name": "idxMejor",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "var_new_21": {
+      "id": "var_new_21",
+      "type": "var_new",
+      "data": {
+        "name": "idxPeor",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "print_22": {
+      "id": "print_22",
+      "type": "print",
+      "data": {
+        "value": "\"=================================\""
+      },
+      "children": {}
+    },
+    "print_23": {
+      "id": "print_23",
+      "type": "print",
+      "data": {
+        "value": "\"       EDUNOTAS++\""
+      },
+      "children": {}
+    },
+    "print_24": {
+      "id": "print_24",
+      "type": "print",
+      "data": {
+        "value": "\"=================================\""
+      },
+      "children": {}
+    },
+    "print_25": {
+      "id": "print_25",
+      "type": "print",
+      "data": {
+        "value": "\"1. Registrar estudiante\""
+      },
+      "children": {}
+    },
+    "print_26": {
+      "id": "print_26",
+      "type": "print",
+      "data": {
+        "value": "\"2. Ingresar notas\""
+      },
+      "children": {}
+    },
+    "print_27": {
+      "id": "print_27",
+      "type": "print",
+      "data": {
+        "value": "\"3. Consultar promedio\""
+      },
+      "children": {}
+    },
+    "print_28": {
+      "id": "print_28",
+      "type": "print",
+      "data": {
+        "value": "\"4. Listar aprobados y reprobados\""
+      },
+      "children": {}
+    },
+    "print_29": {
+      "id": "print_29",
+      "type": "print",
+      "data": {
+        "value": "\"5. Buscar por cedula\""
+      },
+      "children": {}
+    },
+    "print_30": {
+      "id": "print_30",
+      "type": "print",
+      "data": {
+        "value": "\"6. Estadisticas generales\""
+      },
+      "children": {}
+    },
+    "print_31": {
+      "id": "print_31",
+      "type": "print",
+      "data": {
+        "value": "\"7. Salir\""
+      },
+      "children": {}
+    },
+    "print_32": {
+      "id": "print_32",
+      "type": "print",
+      "data": {
+        "value": "\"=================================\""
+      },
+      "children": {}
+    },
+    "ask_33": {
+      "id": "ask_33",
+      "type": "ask",
+      "data": {
+        "variable": "opcion",
+        "question": "\"Seleccione una opcion:\""
+      },
+      "children": {}
+    },
+    "print_34": {
+      "id": "print_34",
+      "type": "print",
+      "data": {
+        "value": "\"--- Registrar Estudiante ---\""
+      },
+      "children": {}
+    },
+    "ask_35": {
+      "id": "ask_35",
+      "type": "ask",
+      "data": {
+        "variable": "cedulas[totalEstudiantes]",
+        "question": "\"Cedula:\""
+      },
+      "children": {}
+    },
+    "ask_36": {
+      "id": "ask_36",
+      "type": "ask",
+      "data": {
+        "variable": "nombres[totalEstudiantes]",
+        "question": "\"Nombre:\""
+      },
+      "children": {}
+    },
+    "ask_37": {
+      "id": "ask_37",
+      "type": "ask",
+      "data": {
+        "variable": "edades[totalEstudiantes]",
+        "question": "\"Edad:\""
+      },
+      "children": {}
+    },
+    "ask_38": {
+      "id": "ask_38",
+      "type": "ask",
+      "data": {
+        "variable": "grados[totalEstudiantes]",
+        "question": "\"Grado:\""
+      },
+      "children": {}
+    },
+    "change_var_39": {
+      "id": "change_var_39",
+      "type": "change_var",
+      "data": {
+        "variable": "totalEstudiantes",
+        "amount": "1"
+      },
+      "children": {}
+    },
+    "print_40": {
+      "id": "print_40",
+      "type": "print",
+      "data": {
+        "value": "\"Estudiante registrado con exito!\""
+      },
+      "children": {}
+    },
+    "if_41": {
+      "id": "if_41",
+      "type": "if",
+      "data": {
+        "condition": "opcion == 1",
+        "elseIfs": [],
+        "hasElse": false
+      },
+      "children": {
+        "body": [
+          "print_34",
+          "ask_35",
+          "ask_36",
+          "ask_37",
+          "ask_38",
+          "change_var_39",
+          "print_40"
+        ],
+        "elseBody": []
+      }
+    },
+    "print_42": {
+      "id": "print_42",
+      "type": "print",
+      "data": {
+        "value": "\"--- Ingresar Notas ---\""
+      },
+      "children": {}
+    },
+    "ask_43": {
+      "id": "ask_43",
+      "type": "ask",
+      "data": {
+        "variable": "buscarCed",
+        "question": "\"Ingrese cedula del estudiante:\""
+      },
+      "children": {}
+    },
+    "set_var_44": {
+      "id": "set_var_44",
+      "type": "set_var",
+      "data": {
+        "variable": "encontrado",
+        "value": "-1"
+      },
+      "children": {}
+    },
+    "set_var_45": {
+      "id": "set_var_45",
+      "type": "set_var",
+      "data": {
+        "variable": "encontrado",
+        "value": "i"
+      },
+      "children": {}
+    },
+    "if_46": {
+      "id": "if_46",
+      "type": "if",
+      "data": {
+        "condition": "cedulas[i] == buscarCed",
+        "elseIfs": [],
+        "hasElse": false
+      },
+      "children": {
+        "body": [
+          "set_var_45"
+        ],
+        "elseBody": []
+      }
+    },
+    "for_47": {
+      "id": "for_47",
+      "type": "for",
+      "data": {
+        "init": "int i = 0",
+        "condition": "i < totalEstudiantes",
+        "increment": "i++"
+      },
+      "children": {
+        "body": [
+          "if_46"
+        ]
+      }
+    },
+    "ask_48": {
+      "id": "ask_48",
+      "type": "ask",
+      "data": {
+        "variable": "nota1[encontrado]",
+        "question": "\"Nota 1 (0.0 - 5.0):\""
+      },
+      "children": {}
+    },
+    "ask_49": {
+      "id": "ask_49",
+      "type": "ask",
+      "data": {
+        "variable": "nota2[encontrado]",
+        "question": "\"Nota 2 (0.0 - 5.0):\""
+      },
+      "children": {}
+    },
+    "ask_50": {
+      "id": "ask_50",
+      "type": "ask",
+      "data": {
+        "variable": "nota3[encontrado]",
+        "question": "\"Nota 3 (0.0 - 5.0):\""
+      },
+      "children": {}
+    },
+    "set_var_51": {
+      "id": "set_var_51",
+      "type": "set_var",
+      "data": {
+        "variable": "promedios[encontrado]",
+        "value": "(nota1[encontrado] + nota2[encontrado] + nota3[encontrado]) / 3.0"
+      },
+      "children": {}
+    },
+    "set_var_52": {
+      "id": "set_var_52",
+      "type": "set_var",
+      "data": {
+        "variable": "estados[encontrado]",
+        "value": "\"Aprobado\""
+      },
+      "children": {}
+    },
+    "set_var_53": {
+      "id": "set_var_53",
+      "type": "set_var",
+      "data": {
+        "variable": "estados[encontrado]",
+        "value": "\"Reprobado\""
+      },
+      "children": {}
+    },
+    "if_54": {
+      "id": "if_54",
+      "type": "if",
+      "data": {
+        "condition": "promedios[encontrado] >= 3.0",
+        "elseIfs": [],
+        "hasElse": true
+      },
+      "children": {
+        "body": [
+          "set_var_52"
+        ],
+        "elseBody": [
+          "set_var_53"
+        ]
+      }
+    },
+    "print_55": {
+      "id": "print_55",
+      "type": "print",
+      "data": {
+        "value": "\"Notas guardadas y promedio calculado.\""
+      },
+      "children": {}
+    },
+    "print_56": {
+      "id": "print_56",
+      "type": "print",
+      "data": {
+        "value": "\"Error: Estudiante no encontrado.\""
+      },
+      "children": {}
+    },
+    "if_57": {
+      "id": "if_57",
+      "type": "if",
+      "data": {
+        "condition": "encontrado != -1",
+        "elseIfs": [],
+        "hasElse": true
+      },
+      "children": {
+        "body": [
+          "ask_48",
+          "ask_49",
+          "ask_50",
+          "set_var_51",
+          "if_54",
+          "print_55"
+        ],
+        "elseBody": [
+          "print_56"
+        ]
+      }
+    },
+    "if_58": {
+      "id": "if_58",
+      "type": "if",
+      "data": {
+        "condition": "opcion == 2",
+        "elseIfs": [],
+        "hasElse": false
+      },
+      "children": {
+        "body": [
+          "print_42",
+          "ask_43",
+          "set_var_44",
+          "for_47",
+          "if_57"
+        ],
+        "elseBody": []
+      }
+    },
+    "print_59": {
+      "id": "print_59",
+      "type": "print",
+      "data": {
+        "value": "\"--- Consultar Promedio ---\""
+      },
+      "children": {}
+    },
+    "ask_60": {
+      "id": "ask_60",
+      "type": "ask",
+      "data": {
+        "variable": "buscarCed",
+        "question": "\"Ingrese cedula del estudiante:\""
+      },
+      "children": {}
+    },
+    "set_var_61": {
+      "id": "set_var_61",
+      "type": "set_var",
+      "data": {
+        "variable": "encontrado",
+        "value": "-1"
+      },
+      "children": {}
+    },
+    "set_var_62": {
+      "id": "set_var_62",
+      "type": "set_var",
+      "data": {
+        "variable": "encontrado",
+        "value": "i"
+      },
+      "children": {}
+    },
+    "if_63": {
+      "id": "if_63",
+      "type": "if",
+      "data": {
+        "condition": "cedulas[i] == buscarCed",
+        "elseIfs": [],
+        "hasElse": false
+      },
+      "children": {
+        "body": [
+          "set_var_62"
+        ],
+        "elseBody": []
+      }
+    },
+    "for_64": {
+      "id": "for_64",
+      "type": "for",
+      "data": {
+        "init": "int i = 0",
+        "condition": "i < totalEstudiantes",
+        "increment": "i++"
+      },
+      "children": {
+        "body": [
+          "if_63"
+        ]
+      }
+    },
+    "print_65": {
+      "id": "print_65",
+      "type": "print",
+      "data": {
+        "value": "\"Nombre: \" + nombres[encontrado]"
+      },
+      "children": {}
+    },
+    "print_66": {
+      "id": "print_66",
+      "type": "print",
+      "data": {
+        "value": "\"Promedio: \" + to_string(promedios[encontrado])"
+      },
+      "children": {}
+    },
+    "print_67": {
+      "id": "print_67",
+      "type": "print",
+      "data": {
+        "value": "\"Estado: \" + estados[encontrado]"
+      },
+      "children": {}
+    },
+    "print_68": {
+      "id": "print_68",
+      "type": "print",
+      "data": {
+        "value": "\"Error: Estudiante no encontrado.\""
+      },
+      "children": {}
+    },
+    "if_69": {
+      "id": "if_69",
+      "type": "if",
+      "data": {
+        "condition": "encontrado != -1",
+        "elseIfs": [],
+        "hasElse": true
+      },
+      "children": {
+        "body": [
+          "print_65",
+          "print_66",
+          "print_67"
+        ],
+        "elseBody": [
+          "print_68"
+        ]
+      }
+    },
+    "if_70": {
+      "id": "if_70",
+      "type": "if",
+      "data": {
+        "condition": "opcion == 3",
+        "elseIfs": [],
+        "hasElse": false
+      },
+      "children": {
+        "body": [
+          "print_59",
+          "ask_60",
+          "set_var_61",
+          "for_64",
+          "if_69"
+        ],
+        "elseBody": []
+      }
+    },
+    "print_71": {
+      "id": "print_71",
+      "type": "print",
+      "data": {
+        "value": "\"--- Listado de Aprobados ---\""
+      },
+      "children": {}
+    },
+    "set_var_72": {
+      "id": "set_var_72",
+      "type": "set_var",
+      "data": {
+        "variable": "aprobados",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "print_73": {
+      "id": "print_73",
+      "type": "print",
+      "data": {
+        "value": "nombres[i] + \" - \" + to_string(promedios[i])"
+      },
+      "children": {}
+    },
+    "change_var_74": {
+      "id": "change_var_74",
+      "type": "change_var",
+      "data": {
+        "variable": "aprobados",
+        "amount": "1"
+      },
+      "children": {}
+    },
+    "if_75": {
+      "id": "if_75",
+      "type": "if",
+      "data": {
+        "condition": "promedios[i] >= 3.0",
+        "elseIfs": [],
+        "hasElse": false
+      },
+      "children": {
+        "body": [
+          "print_73",
+          "change_var_74"
+        ],
+        "elseBody": []
+      }
+    },
+    "for_76": {
+      "id": "for_76",
+      "type": "for",
+      "data": {
+        "init": "int i = 0",
+        "condition": "i < totalEstudiantes",
+        "increment": "i++"
+      },
+      "children": {
+        "body": [
+          "if_75"
+        ]
+      }
+    },
+    "print_77": {
+      "id": "print_77",
+      "type": "print",
+      "data": {
+        "value": "\"Total aprobados: \" + to_string(aprobados)"
+      },
+      "children": {}
+    },
+    "print_78": {
+      "id": "print_78",
+      "type": "print",
+      "data": {
+        "value": "\"--- Listado de Reprobados ---\""
+      },
+      "children": {}
+    },
+    "set_var_79": {
+      "id": "set_var_79",
+      "type": "set_var",
+      "data": {
+        "variable": "reprobados",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "print_80": {
+      "id": "print_80",
+      "type": "print",
+      "data": {
+        "value": "nombres[i] + \" - \" + to_string(promedios[i])"
+      },
+      "children": {}
+    },
+    "change_var_81": {
+      "id": "change_var_81",
+      "type": "change_var",
+      "data": {
+        "variable": "reprobados",
+        "amount": "1"
+      },
+      "children": {}
+    },
+    "if_82": {
+      "id": "if_82",
+      "type": "if",
+      "data": {
+        "condition": "promedios[i] < 3.0",
+        "elseIfs": [],
+        "hasElse": false
+      },
+      "children": {
+        "body": [
+          "print_80",
+          "change_var_81"
+        ],
+        "elseBody": []
+      }
+    },
+    "for_83": {
+      "id": "for_83",
+      "type": "for",
+      "data": {
+        "init": "int i = 0",
+        "condition": "i < totalEstudiantes",
+        "increment": "i++"
+      },
+      "children": {
+        "body": [
+          "if_82"
+        ]
+      }
+    },
+    "print_84": {
+      "id": "print_84",
+      "type": "print",
+      "data": {
+        "value": "\"Total reprobados: \" + to_string(reprobados)"
+      },
+      "children": {}
+    },
+    "if_85": {
+      "id": "if_85",
+      "type": "if",
+      "data": {
+        "condition": "opcion == 4",
+        "elseIfs": [],
+        "hasElse": false
+      },
+      "children": {
+        "body": [
+          "print_71",
+          "set_var_72",
+          "for_76",
+          "print_77",
+          "print_78",
+          "set_var_79",
+          "for_83",
+          "print_84"
+        ],
+        "elseBody": []
+      }
+    },
+    "print_86": {
+      "id": "print_86",
+      "type": "print",
+      "data": {
+        "value": "\"--- Buscar Estudiante ---\""
+      },
+      "children": {}
+    },
+    "ask_87": {
+      "id": "ask_87",
+      "type": "ask",
+      "data": {
+        "variable": "buscarCed",
+        "question": "\"Ingrese cedula:\""
+      },
+      "children": {}
+    },
+    "set_var_88": {
+      "id": "set_var_88",
+      "type": "set_var",
+      "data": {
+        "variable": "encontrado",
+        "value": "-1"
+      },
+      "children": {}
+    },
+    "set_var_89": {
+      "id": "set_var_89",
+      "type": "set_var",
+      "data": {
+        "variable": "encontrado",
+        "value": "i"
+      },
+      "children": {}
+    },
+    "if_90": {
+      "id": "if_90",
+      "type": "if",
+      "data": {
+        "condition": "cedulas[i] == buscarCed",
+        "elseIfs": [],
+        "hasElse": false
+      },
+      "children": {
+        "body": [
+          "set_var_89"
+        ],
+        "elseBody": []
+      }
+    },
+    "for_91": {
+      "id": "for_91",
+      "type": "for",
+      "data": {
+        "init": "int i = 0",
+        "condition": "i < totalEstudiantes",
+        "increment": "i++"
+      },
+      "children": {
+        "body": [
+          "if_90"
+        ]
+      }
+    },
+    "print_92": {
+      "id": "print_92",
+      "type": "print",
+      "data": {
+        "value": "\"Cedula: \" + to_string(cedulas[encontrado])"
+      },
+      "children": {}
+    },
+    "print_93": {
+      "id": "print_93",
+      "type": "print",
+      "data": {
+        "value": "\"Nombre: \" + nombres[encontrado]"
+      },
+      "children": {}
+    },
+    "print_94": {
+      "id": "print_94",
+      "type": "print",
+      "data": {
+        "value": "\"Edad: \" + to_string(edades[encontrado])"
+      },
+      "children": {}
+    },
+    "print_95": {
+      "id": "print_95",
+      "type": "print",
+      "data": {
+        "value": "\"Grado: \" + grados[encontrado]"
+      },
+      "children": {}
+    },
+    "print_96": {
+      "id": "print_96",
+      "type": "print",
+      "data": {
+        "value": "\"Nota 1: \" + to_string(nota1[encontrado])"
+      },
+      "children": {}
+    },
+    "print_97": {
+      "id": "print_97",
+      "type": "print",
+      "data": {
+        "value": "\"Nota 2: \" + to_string(nota2[encontrado])"
+      },
+      "children": {}
+    },
+    "print_98": {
+      "id": "print_98",
+      "type": "print",
+      "data": {
+        "value": "\"Nota 3: \" + to_string(nota3[encontrado])"
+      },
+      "children": {}
+    },
+    "print_99": {
+      "id": "print_99",
+      "type": "print",
+      "data": {
+        "value": "\"Promedio: \" + to_string(promedios[encontrado])"
+      },
+      "children": {}
+    },
+    "print_100": {
+      "id": "print_100",
+      "type": "print",
+      "data": {
+        "value": "\"Estado: \" + estados[encontrado]"
+      },
+      "children": {}
+    },
+    "print_101": {
+      "id": "print_101",
+      "type": "print",
+      "data": {
+        "value": "\"Estudiante no encontrado.\""
+      },
+      "children": {}
+    },
+    "if_102": {
+      "id": "if_102",
+      "type": "if",
+      "data": {
+        "condition": "encontrado != -1",
+        "elseIfs": [],
+        "hasElse": true
+      },
+      "children": {
+        "body": [
+          "print_92",
+          "print_93",
+          "print_94",
+          "print_95",
+          "print_96",
+          "print_97",
+          "print_98",
+          "print_99",
+          "print_100"
+        ],
+        "elseBody": [
+          "print_101"
+        ]
+      }
+    },
+    "if_103": {
+      "id": "if_103",
+      "type": "if",
+      "data": {
+        "condition": "opcion == 5",
+        "elseIfs": [],
+        "hasElse": false
+      },
+      "children": {
+        "body": [
+          "print_86",
+          "ask_87",
+          "set_var_88",
+          "for_91",
+          "if_102"
+        ],
+        "elseBody": []
+      }
+    },
+    "print_104": {
+      "id": "print_104",
+      "type": "print",
+      "data": {
+        "value": "\"--- Estadisticas Generales ---\""
+      },
+      "children": {}
+    },
+    "print_105": {
+      "id": "print_105",
+      "type": "print",
+      "data": {
+        "value": "\"Total Estudiantes: \" + to_string(totalEstudiantes)"
+      },
+      "children": {}
+    },
+    "set_var_106": {
+      "id": "set_var_106",
+      "type": "set_var",
+      "data": {
+        "variable": "aprobados",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "set_var_107": {
+      "id": "set_var_107",
+      "type": "set_var",
+      "data": {
+        "variable": "reprobados",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "set_var_108": {
+      "id": "set_var_108",
+      "type": "set_var",
+      "data": {
+        "variable": "sumaPromedios",
+        "value": "0.0"
+      },
+      "children": {}
+    },
+    "set_var_109": {
+      "id": "set_var_109",
+      "type": "set_var",
+      "data": {
+        "variable": "mejorProm",
+        "value": "-1.0"
+      },
+      "children": {}
+    },
+    "set_var_110": {
+      "id": "set_var_110",
+      "type": "set_var",
+      "data": {
+        "variable": "peorProm",
+        "value": "6.0"
+      },
+      "children": {}
+    },
+    "set_var_111": {
+      "id": "set_var_111",
+      "type": "set_var",
+      "data": {
+        "variable": "idxMejor",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "set_var_112": {
+      "id": "set_var_112",
+      "type": "set_var",
+      "data": {
+        "variable": "idxPeor",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "change_var_113": {
+      "id": "change_var_113",
+      "type": "change_var",
+      "data": {
+        "variable": "aprobados",
+        "amount": "1"
+      },
+      "children": {}
+    },
+    "change_var_114": {
+      "id": "change_var_114",
+      "type": "change_var",
+      "data": {
+        "variable": "reprobados",
+        "amount": "1"
+      },
+      "children": {}
+    },
+    "if_115": {
+      "id": "if_115",
+      "type": "if",
+      "data": {
+        "condition": "promedios[i] >= 3.0",
+        "elseIfs": [],
+        "hasElse": true
+      },
+      "children": {
+        "body": [
+          "change_var_113"
+        ],
+        "elseBody": [
+          "change_var_114"
+        ]
+      }
+    },
+    "change_var_116": {
+      "id": "change_var_116",
+      "type": "change_var",
+      "data": {
+        "variable": "sumaPromedios",
+        "amount": "promedios[i]"
+      },
+      "children": {}
+    },
+    "set_var_117": {
+      "id": "set_var_117",
+      "type": "set_var",
+      "data": {
+        "variable": "mejorProm",
+        "value": "promedios[i]"
+      },
+      "children": {}
+    },
+    "set_var_118": {
+      "id": "set_var_118",
+      "type": "set_var",
+      "data": {
+        "variable": "idxMejor",
+        "value": "i"
+      },
+      "children": {}
+    },
+    "if_119": {
+      "id": "if_119",
+      "type": "if",
+      "data": {
+        "condition": "promedios[i] > mejorProm",
+        "elseIfs": [],
+        "hasElse": false
+      },
+      "children": {
+        "body": [
+          "set_var_117",
+          "set_var_118"
+        ],
+        "elseBody": []
+      }
+    },
+    "set_var_120": {
+      "id": "set_var_120",
+      "type": "set_var",
+      "data": {
+        "variable": "peorProm",
+        "value": "promedios[i]"
+      },
+      "children": {}
+    },
+    "set_var_121": {
+      "id": "set_var_121",
+      "type": "set_var",
+      "data": {
+        "variable": "idxPeor",
+        "value": "i"
+      },
+      "children": {}
+    },
+    "if_122": {
+      "id": "if_122",
+      "type": "if",
+      "data": {
+        "condition": "promedios[i] < peorProm",
+        "elseIfs": [],
+        "hasElse": false
+      },
+      "children": {
+        "body": [
+          "set_var_120",
+          "set_var_121"
+        ],
+        "elseBody": []
+      }
+    },
+    "for_123": {
+      "id": "for_123",
+      "type": "for",
+      "data": {
+        "init": "int i = 0",
+        "condition": "i < totalEstudiantes",
+        "increment": "i++"
+      },
+      "children": {
+        "body": [
+          "if_115",
+          "change_var_116",
+          "if_119",
+          "if_122"
+        ]
+      }
+    },
+    "print_124": {
+      "id": "print_124",
+      "type": "print",
+      "data": {
+        "value": "\"Aprobados: \" + to_string(aprobados)"
+      },
+      "children": {}
+    },
+    "print_125": {
+      "id": "print_125",
+      "type": "print",
+      "data": {
+        "value": "\"Reprobados: \" + to_string(reprobados)"
+      },
+      "children": {}
+    },
+    "print_126": {
+      "id": "print_126",
+      "type": "print",
+      "data": {
+        "value": "\"Promedio General: \" + to_string(sumaPromedios / totalEstudiantes)"
+      },
+      "children": {}
+    },
+    "print_127": {
+      "id": "print_127",
+      "type": "print",
+      "data": {
+        "value": "\"Mejor Promedio: \" + nombres[idxMejor] + \" (\" + to_string(mejorProm) + \")\""
+      },
+      "children": {}
+    },
+    "print_128": {
+      "id": "print_128",
+      "type": "print",
+      "data": {
+        "value": "\"Peor Promedio: \" + nombres[idxPeor] + \" (\" + to_string(peorProm) + \")\""
+      },
+      "children": {}
+    },
+    "print_129": {
+      "id": "print_129",
+      "type": "print",
+      "data": {
+        "value": "\"No hay estudiantes registrados para calcular estadisticas.\""
+      },
+      "children": {}
+    },
+    "if_130": {
+      "id": "if_130",
+      "type": "if",
+      "data": {
+        "condition": "totalEstudiantes > 0",
+        "elseIfs": [],
+        "hasElse": true
+      },
+      "children": {
+        "body": [
+          "set_var_106",
+          "set_var_107",
+          "set_var_108",
+          "set_var_109",
+          "set_var_110",
+          "set_var_111",
+          "set_var_112",
+          "for_123",
+          "print_124",
+          "print_125",
+          "print_126",
+          "print_127",
+          "print_128"
+        ],
+        "elseBody": [
+          "print_129"
+        ]
+      }
+    },
+    "if_131": {
+      "id": "if_131",
+      "type": "if",
+      "data": {
+        "condition": "opcion == 6",
+        "elseIfs": [],
+        "hasElse": false
+      },
+      "children": {
+        "body": [
+          "print_104",
+          "print_105",
+          "if_130"
+        ],
+        "elseBody": []
+      }
+    },
+    "while_132": {
+      "id": "while_132",
+      "type": "while",
+      "data": {
+        "condition": "opcion != 7"
+      },
+      "children": {
+        "body": [
+          "print_22",
+          "print_23",
+          "print_24",
+          "print_25",
+          "print_26",
+          "print_27",
+          "print_28",
+          "print_29",
+          "print_30",
+          "print_31",
+          "print_32",
+          "ask_33",
+          "if_41",
+          "if_58",
+          "if_70",
+          "if_85",
+          "if_103",
+          "if_131"
+        ]
+      }
+    },
+    "print_133": {
+      "id": "print_133",
+      "type": "print",
+      "data": {
+        "value": "\"Saliendo del sistema EduNotas++...\""
+      },
+      "children": {}
+    }
+  },
+  "rootNodes": [
+    "arr_1",
+    "arr_2",
+    "arr_3",
+    "arr_4",
+    "arr_5",
+    "arr_6",
+    "arr_7",
+    "arr_8",
+    "arr_9",
+    "var_new_10",
+    "var_new_11",
+    "var_new_12",
+    "var_new_13",
+    "var_new_14",
+    "var_new_15",
+    "var_new_16",
+    "var_new_17",
+    "var_new_18",
+    "var_new_19",
+    "var_new_20",
+    "var_new_21",
+    "while_132",
+    "print_133"
+  ],
+  "variables": {
+    "totalEstudiantes": {
+      "name": "totalEstudiantes",
+      "inferredType": "int",
+      "blockId": "gen",
+      "firstValue": "0",
+      "createdAt": 1781643380324
+    },
+    "opcion": {
+      "name": "opcion",
+      "inferredType": "int",
+      "blockId": "gen",
+      "firstValue": "0",
+      "createdAt": 1781643380324
+    },
+    "i": {
+      "name": "i",
+      "inferredType": "int",
+      "blockId": "gen",
+      "firstValue": "0",
+      "createdAt": 1781643380324
+    },
+    "buscarCed": {
+      "name": "buscarCed",
+      "inferredType": "int",
+      "blockId": "gen",
+      "firstValue": "0",
+      "createdAt": 1781643380324
+    },
+    "encontrado": {
+      "name": "encontrado",
+      "inferredType": "int",
+      "blockId": "gen",
+      "firstValue": "-1",
+      "createdAt": 1781643380324
+    },
+    "aprobados": {
+      "name": "aprobados",
+      "inferredType": "int",
+      "blockId": "gen",
+      "firstValue": "0",
+      "createdAt": 1781643380324
+    },
+    "reprobados": {
+      "name": "reprobados",
+      "inferredType": "int",
+      "blockId": "gen",
+      "firstValue": "0",
+      "createdAt": 1781643380324
+    },
+    "sumaPromedios": {
+      "name": "sumaPromedios",
+      "inferredType": "float",
+      "blockId": "gen",
+      "firstValue": "0.0",
+      "createdAt": 1781643380324
+    },
+    "mejorProm": {
+      "name": "mejorProm",
+      "inferredType": "float",
+      "blockId": "gen",
+      "firstValue": "-1.0",
+      "createdAt": 1781643380324
+    },
+    "peorProm": {
+      "name": "peorProm",
+      "inferredType": "float",
+      "blockId": "gen",
+      "firstValue": "6.0",
+      "createdAt": 1781643380324
+    },
+    "idxMejor": {
+      "name": "idxMejor",
+      "inferredType": "int",
+      "blockId": "gen",
+      "firstValue": "0",
+      "createdAt": 1781643380324
+    },
+    "idxPeor": {
+      "name": "idxPeor",
+      "inferredType": "int",
+      "blockId": "gen",
+      "firstValue": "0",
+      "createdAt": 1781643380324
+    }
+  }
+}

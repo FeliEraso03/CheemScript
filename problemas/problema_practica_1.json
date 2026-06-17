@@ -1,0 +1,211 @@
+{
+  "nodes": {
+    "var_new_1": {
+      "id": "var_new_1",
+      "type": "var_new",
+      "data": {
+        "name": "humedad",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "var_new_2": {
+      "id": "var_new_2",
+      "type": "var_new",
+      "data": {
+        "name": "valvula_abierta",
+        "value": "false"
+      },
+      "children": {}
+    },
+    "var_3": {
+      "id": "var_3",
+      "type": "var",
+      "data": {
+        "dataType": "int",
+        "name": "ciclos_restantes",
+        "value": "3"
+      },
+      "children": {}
+    },
+    "random_4": {
+      "id": "random_4",
+      "type": "random",
+      "data": {
+        "variable": "humedad",
+        "min": "10",
+        "max": "90",
+        "dataType": "int",
+        "decimals": "0"
+      },
+      "children": {}
+    },
+    "show_var_5": {
+      "id": "show_var_5",
+      "type": "show_var",
+      "data": {
+        "variable": "humedad"
+      },
+      "children": {}
+    },
+    "if_6": {
+      "id": "if_6",
+      "type": "if",
+      "data": {
+        "condition": "humedad < 40",
+        "elseIfs": [],
+        "hasElse": true
+      },
+      "children": {
+        "body": [
+          "set_var_7",
+          "say_8",
+          "repeat_9"
+        ],
+        "elseBody": [
+          "say_12"
+        ]
+      }
+    },
+    "set_var_7": {
+      "id": "set_var_7",
+      "type": "set_var",
+      "data": {
+        "variable": "valvula_abierta",
+        "value": "true"
+      },
+      "children": {}
+    },
+    "say_8": {
+      "id": "say_8",
+      "type": "say",
+      "data": {
+        "value": "\"Humedad baja detectada. Abriendo válvula de riego...\"",
+        "duration": "3",
+        "unit": "s"
+      },
+      "children": {}
+    },
+    "repeat_9": {
+      "id": "repeat_9",
+      "type": "repeat",
+      "data": {
+        "count": "3",
+        "iterator": "k"
+      },
+      "children": {
+        "body": [
+          "print_10",
+          "wait_11"
+        ]
+      }
+    },
+    "print_10": {
+      "id": "print_10",
+      "type": "print",
+      "data": {
+        "value": "\"Emitiendo pulso de irrigación...\""
+      },
+      "children": {}
+    },
+    "wait_11": {
+      "id": "wait_11",
+      "type": "wait",
+      "data": {
+        "duration": "2",
+        "unit": "s"
+      },
+      "children": {}
+    },
+    "say_12": {
+      "id": "say_12",
+      "type": "say",
+      "data": {
+        "value": "\"Nivel de humedad óptimo. Válvula cerrada.\"",
+        "duration": "2",
+        "unit": "s"
+      },
+      "children": {}
+    },
+    "while_13": {
+      "id": "while_13",
+      "type": "while",
+      "data": {
+        "condition": "ciclos_restantes > 0"
+      },
+      "children": {
+        "body": [
+          "print_14",
+          "sleep_15",
+          "change_var_16"
+        ]
+      }
+    },
+    "print_14": {
+      "id": "print_14",
+      "type": "print",
+      "data": {
+        "value": "\"Inspección del sensor activa. Ciclos restantes: \" + to_string(ciclos_restantes)"
+      },
+      "children": {}
+    },
+    "sleep_15": {
+      "id": "sleep_15",
+      "type": "sleep",
+      "data": {
+        "duration": "200"
+      },
+      "children": {}
+    },
+    "change_var_16": {
+      "id": "change_var_16",
+      "type": "change_var",
+      "data": {
+        "variable": "ciclos_restantes",
+        "amount": "-1"
+      },
+      "children": {}
+    },
+    "print_17": {
+      "id": "print_17",
+      "type": "print",
+      "data": {
+        "value": "\"Monitoreo completado con éxito.\""
+      },
+      "children": {}
+    }
+  },
+  "rootNodes": [
+    "var_new_1",
+    "var_new_2",
+    "var_3",
+    "random_4",
+    "show_var_5",
+    "if_6",
+    "while_13",
+    "print_17"
+  ],
+  "variables": {
+    "humedad": {
+      "name": "humedad",
+      "inferredType": "int",
+      "blockId": "var_new_1",
+      "firstValue": "0",
+      "createdAt": 1781663705576
+    },
+    "valvula_abierta": {
+      "name": "valvula_abierta",
+      "inferredType": "bool",
+      "blockId": "var_new_2",
+      "firstValue": "false",
+      "createdAt": 1781663705576
+    },
+    "ciclos_restantes": {
+      "name": "ciclos_restantes",
+      "inferredType": "int",
+      "blockId": "var_3",
+      "firstValue": "3",
+      "createdAt": 1781663705576
+    }
+  }
+}

@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import { BaseBlock } from './BaseBlock';
 import { NestedDropZone } from '../components/NestedDropZone';
+import { AutocompleteInput } from '../components/AutocompleteInput';
 import { afd_if } from '../automata/afd_if';
-import type { TokenIf, AfdIfResult } from '../automata/afd_if';
-import { validarExpr } from '../automata/parser_expr';
-import type { ParserResult } from '../automata/parser_expr';
+import type { TokenIf } from '../automata/afd_if';
+import { validarExpr } from '../automata/dpda_expr';
+import type { ParserResult } from '../automata/dpda_expr';
 import { useAST } from '../context/ASTContext';
 
 interface ElseIfBranch {
@@ -24,51 +25,42 @@ export const IfBlock: React.FC<IfBlockProps> = ({ id, onDelete, onMoveUp, onMove
   
   // Leer del ASTContext
   const node = nodes[id];
-  if (!node) return null;
 
-  const condition: string = node.data.condition || '';
-  const elseIfs: ElseIfBranch[] = node.data.elseIfs || [];
-  const hasElse: boolean = node.data.hasElse || false;
+  const condition: string = node?.data.condition || '';
+  const elseIfs: ElseIfBranch[] = node?.data.elseIfs || [];
+  const hasElse: boolean = node?.data.hasElse || false;
 
   // Actualizar el ASTContext
   const setCondition = (val: string) => updateNodeData(id, { condition: val });
   const setElseIfs = (val: ElseIfBranch[]) => updateNodeData(id, { elseIfs: val });
   const setHasElse = (val: boolean) => updateNodeData(id, { hasElse: val });
 
-  const [structResult, setStructResult] = useState<AfdIfResult | null>(null);
-  const [mainExprResult, setMainExprResult] = useState<ParserResult | null>(null);
-  const [elseIfResults, setElseIfResults] = useState<Map<string, ParserResult>>(new Map());
+  // --- Validar la condicion principal con Parser PDA ---
+  const mainExprResult = validarExpr(condition);
 
-  useEffect(() => {
-    // --- Validar la condicion principal con Parser PDA ---
-    const mainRes = validarExpr(condition);
-    setMainExprResult(mainRes);
+  // --- Validar cada condicion de else if ---
+  const elseIfResults = new Map<string, ParserResult>();
+  for (const ei of elseIfs) {
+    elseIfResults.set(ei.id, validarExpr(ei.condition));
+  }
 
-    // --- Validar cada condicion de else if ---
-    const eiResults = new Map<string, ParserResult>();
-    for (const ei of elseIfs) {
-      eiResults.set(ei.id, validarExpr(ei.condition));
-    }
-    setElseIfResults(eiResults);
+  // --- Generar tokens estructurales para el AFD del if ---
+  const tokens: TokenIf[] = ['if', '('];
+  if (mainExprResult.valid) tokens.push('EXPR');
+  tokens.push(')', '{', '}');
 
-    // --- Generar tokens estructurales para el AFD del if ---
-    const tokens: TokenIf[] = ['if', '('];
-    if (mainRes.valid) tokens.push('EXPR');
+  for (const ei of elseIfs) {
+    tokens.push('else', 'if', '(');
+    const eiRes = elseIfResults.get(ei.id);
+    if (eiRes?.valid) tokens.push('EXPR');
     tokens.push(')', '{', '}');
+  }
 
-    for (const ei of elseIfs) {
-      tokens.push('else', 'if', '(');
-      const eiRes = eiResults.get(ei.id);
-      if (eiRes?.valid) tokens.push('EXPR');
-      tokens.push(')', '{', '}');
-    }
+  if (hasElse) {
+    tokens.push('else', '{', '}');
+  }
 
-    if (hasElse) {
-      tokens.push('else', '{', '}');
-    }
-
-    setStructResult(afd_if(tokens));
-  }, [condition, elseIfs, hasElse]);
+  const structResult = afd_if(tokens);
 
   const addElseIf = () => {
     setElseIfs([...elseIfs, { id: crypto.randomUUID(), condition: '' }]);
@@ -108,34 +100,47 @@ export const IfBlock: React.FC<IfBlockProps> = ({ id, onDelete, onMoveUp, onMove
 
   const errorMsg = getErrorMessage();
 
+  const renderControls = () => (
+    <div className="if-controls" style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+      <button className="block-btn" onClick={addElseIf}>+ else if</button>
+      <button className="block-btn" onClick={toggleElse}>
+        {hasElse ? '- else' : '+ else'}
+      </button>
+    </div>
+  );
+
+  if (!node) return null;
+
   return (
-    <div className="if-block-group" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+    <div className="if-block-group" style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
       <BaseBlock 
         title={
           <div className="if-title-row">
             <span className="if-keyword">if</span>
             <span className="if-paren">(</span>
-            <input
-              type="text"
-              className={`block-input if-condition-input ${mainExprResult && !mainExprResult.valid ? 'input-error' : ''}`}
+            <AutocompleteInput
+              className={`if-condition-input ${mainExprResult && !mainExprResult.valid ? 'input-error' : ''}`}
               placeholder="x > 0"
               value={condition}
-              onChange={(e) => setCondition(e.target.value)}
+              onChange={(val) => setCondition(val)}
             />
             <span className="if-paren">)</span>
           </div>
         } 
         category="if"
         hasError={!allValid}
+        errorMessage={!allValid ? `${errorMsg ?? 'Error desconocido'} ${structResult ? `[${structResult.estadoFinal}]` : ''}` : null}
         onDelete={onDelete}
         onMoveUp={onMoveUp}
         onMoveDown={onMoveDown}
       >
         <NestedDropZone parentId={id} zoneName="body" placeholder="Cuerpo del if: arrastra bloques aqui" />
+        {elseIfs.length === 0 && !hasElse && renderControls()}
       </BaseBlock>
 
       {/* Ramas else if convertidas en bloques separados pero adjuntos visualmente */}
-      {elseIfs.map((ei) => {
+      {elseIfs.map((ei, index) => {
+        const isLast = index === elseIfs.length - 1 && !hasElse;
         const eiRes = elseIfResults.get(ei.id);
         return (
           <BaseBlock 
@@ -144,12 +149,11 @@ export const IfBlock: React.FC<IfBlockProps> = ({ id, onDelete, onMoveUp, onMove
               <div className="if-title-row">
                 <span className="if-keyword">else if</span>
                 <span className="if-paren">(</span>
-                <input
-                  type="text"
-                  className={`block-input if-condition-input ${eiRes && !eiRes.valid ? 'input-error' : ''}`}
+                <AutocompleteInput
+                  className={`if-condition-input ${eiRes && !eiRes.valid ? 'input-error' : ''}`}
                   placeholder="y != 0"
                   value={ei.condition}
-                  onChange={(e) => updateElseIf(ei.id, e.target.value)}
+                  onChange={(val) => updateElseIf(ei.id, val)}
                 />
                 <span className="if-paren">)</span>
                 <button
@@ -161,8 +165,10 @@ export const IfBlock: React.FC<IfBlockProps> = ({ id, onDelete, onMoveUp, onMove
             }
             category="if"
             hasError={eiRes && !eiRes.valid}
+            errorMessage={eiRes && !eiRes.valid ? eiRes.mensaje : null}
           >
             <NestedDropZone parentId={id} zoneName={`elseIf_${ei.id}`} placeholder="Cuerpo else if: arrastra bloques aqui" />
+            {isLast && renderControls()}
           </BaseBlock>
         );
       })}
@@ -178,29 +184,10 @@ export const IfBlock: React.FC<IfBlockProps> = ({ id, onDelete, onMoveUp, onMove
           category="if"
         >
           <NestedDropZone parentId={id} zoneName="elseBody" placeholder="Cuerpo else: arrastra bloques aqui" />
+          {renderControls()}
         </BaseBlock>
       )}
 
-      {/* Controles de bifurcacion */}
-      <div className="if-controls" style={{ marginTop: '4px' }}>
-        <button className="block-btn" onClick={addElseIf}>+ else if</button>
-        <button className="block-btn" onClick={toggleElse}>
-          {hasElse ? '- else' : '+ else'}
-        </button>
-      </div>
-
-      {/* Barra de error del automata — solo visible cuando hay error */}
-      {!allValid && (
-        <div className="if-status-bar status-error">
-          <span className="status-icon">!!!</span>
-          <span className="status-text">
-            {errorMsg ?? 'Error desconocido'}
-          </span>
-          {structResult && (
-            <span className="status-state">[{structResult.estadoFinal}]</span>
-          )}
-        </div>
-      )}
     </div>
   );
 };

@@ -164,65 +164,131 @@ export function tokenizarCount(raw: string): TokenCount[] {
   return tokens;
 }
 
-function parseSum(tokens: TokenCount[], pos: number): [boolean, number] {
-  let [ok, cur] = parseTerm(tokens, pos);
-  if (!ok) return [false, pos];
+// ── DPDA: Autómata de Pila Determinista para expresiones aritméticas ─────────
+//
+// Definición formal: M = (Q, Σ, Γ, δ, q₀, Z₀, F)
+//
+//   Q  = { pc_inicio, pc_unario, pc_operando, pcERR }
+//   Σ  = { NUM, ID, OP_ADD, OP_MUL, PAREN_A, PAREN_C }
+//   Γ  = { Z₀, PAREN }
+//   q₀ = pc_inicio
+//   Z₀ = Z₀ (símbolo inicial de pila)
+//   F  = { pc_operando }  (aceptación por estado final con pila vacía: pila = [Z₀])
+//
+// Tabla de transiciones δ(estado, entrada, tope_pila) → (nuevo_estado, operación_pila):
+//
+//   (pc_inicio,   NUM,          γ)       → (pc_operando, γ)
+//   (pc_inicio,   ID,           γ)       → (pc_operando, γ)
+//   (pc_inicio,   PAREN_A,     γ)       → (pc_inicio,   push PAREN)
+//   (pc_inicio,   OP_ADD('-'), γ)       → (pc_unario,   γ)
+//   (pc_unario,   NUM,          γ)       → (pc_operando, γ)
+//   (pc_unario,   ID,           γ)       → (pc_operando, γ)
+//   (pc_unario,   PAREN_A,     γ)       → (pc_inicio,   push PAREN)
+//   (pc_operando, OP_ADD,      γ)       → (pc_inicio,   γ)
+//   (pc_operando, OP_MUL,      γ)       → (pc_inicio,   γ)
+//   (pc_operando, PAREN_C,     PAREN·γ) → (pc_operando, pop)
+//   Cualquier otra combinación           → (pcERR,       γ)
+//
+// Condición de aceptación: estado ∈ F ∧ pila = [Z₀] ∧ entrada agotada
+// ─────────────────────────────────────────────────────────────────────────────
 
-  while (cur < tokens.length && tokens[cur].tipo === 'OP_ADD') {
-    const [ok2, cur2] = parseTerm(tokens, cur + 1);
-    if (!ok2) return [false, pos];
-    cur = cur2;
+type EstadoPdaCount = 'pc_inicio' | 'pc_unario' | 'pc_operando' | 'pcERR';
+type SimboloPilaCount = 'Z0' | 'PAREN';
+
+function pdaExpresionAritmetica(tokens: TokenCount[]): {
+  valid: boolean;
+  estadoFinal: EstadoParserCount;
+  mensaje: string;
+} {
+  let estado: EstadoPdaCount = 'pc_inicio';
+  const pila: SimboloPilaCount[] = ['Z0']; // pila explícita con símbolo inicial
+
+  for (let i = 0; i < tokens.length; i++) {
+    const t = tokens[i];
+
+    switch (estado) {
+      case 'pc_inicio':
+        if (t.tipo === 'NUM' && afd_num_pos(t.valor).valid) {
+          estado = 'pc_operando';
+        } else if (t.tipo === 'ID' && afd_id_count(t.valor).valid) {
+          estado = 'pc_operando';
+        } else if (t.tipo === 'PAREN_A') {
+          pila.push('PAREN'); // push
+        } else if (
+          t.tipo === 'OP_ADD' &&
+          (t as { tipo: 'OP_ADD'; valor: string }).valor === '-'
+        ) {
+          estado = 'pc_unario'; // menos unario (solo uno permitido)
+        } else {
+          estado = 'pcERR';
+        }
+        break;
+
+      case 'pc_unario':
+        // Tras menos unario solo se acepta átomo o paréntesis (no otro '-')
+        if (t.tipo === 'NUM' && afd_num_pos(t.valor).valid) {
+          estado = 'pc_operando';
+        } else if (t.tipo === 'ID' && afd_id_count(t.valor).valid) {
+          estado = 'pc_operando';
+        } else if (t.tipo === 'PAREN_A') {
+          pila.push('PAREN'); // push
+          estado = 'pc_inicio';
+        } else {
+          estado = 'pcERR';
+        }
+        break;
+
+      case 'pc_operando':
+        if (t.tipo === 'OP_ADD' || t.tipo === 'OP_MUL') {
+          estado = 'pc_inicio';
+        } else if (t.tipo === 'PAREN_C') {
+          // pop: solo si el tope de la pila es PAREN
+          if (pila.length > 1 && pila[pila.length - 1] === 'PAREN') {
+            pila.pop();
+          } else {
+            estado = 'pcERR'; // paréntesis de cierre sin apertura
+          }
+        } else {
+          estado = 'pcERR';
+        }
+        break;
+    }
+
+    if (estado === 'pcERR') {
+      return {
+        valid: false,
+        estadoFinal: 'pcERR',
+        mensaje: MSG_PARSER_COUNT['pcERR'],
+      };
+    }
   }
 
-  return [true, cur];
-}
-
-function parseTerm(tokens: TokenCount[], pos: number): [boolean, number] {
-  let [ok, cur] = parseFactor(tokens, pos);
-  if (!ok) return [false, pos];
-
-  while (cur < tokens.length && tokens[cur].tipo === 'OP_MUL') {
-    const [ok2, cur2] = parseFactor(tokens, cur + 1);
-    if (!ok2) return [false, pos];
-    cur = cur2;
+  // Condición de aceptación: estado = pc_operando ∧ pila = [Z₀]
+  if (estado === 'pc_operando' && pila.length === 1 && pila[0] === 'Z0') {
+    return {
+      valid: true,
+      estadoFinal: 'pc_expr_valida',
+      mensaje: MSG_PARSER_COUNT['pc_expr_valida'],
+    };
   }
 
-  return [true, cur];
-}
-
-function parseFactor(tokens: TokenCount[], pos: number): [boolean, number] {
-  let cur = pos;
-
-  if (cur < tokens.length &&
-      tokens[cur].tipo === 'OP_ADD' &&
-      (tokens[cur] as { tipo: 'OP_ADD'; valor: string }).valor === '-') {
-    cur++;
+  // Pila no vacía → paréntesis sin cerrar
+  if (pila.length > 1) {
+    return {
+      valid: false,
+      estadoFinal: 'pc_paren_abierto',
+      mensaje: MSG_PARSER_COUNT['pc_paren_abierto'],
+    };
   }
 
-  return parseAtom(tokens, cur);
-}
-
-function parseAtom(tokens: TokenCount[], pos: number): [boolean, number] {
-  if (pos >= tokens.length) return [false, pos];
-
-  const t = tokens[pos];
-
-  if (t.tipo === 'NUM') {
-    return afd_num_pos(t.valor).valid ? [true, pos + 1] : [false, pos];
-  }
-
-  if (t.tipo === 'ID') {
-    return afd_id_count(t.valor).valid ? [true, pos + 1] : [false, pos];
-  }
-
-  if (t.tipo === 'PAREN_A') {
-    const [ok, cur] = parseSum(tokens, pos + 1);
-    if (!ok) return [false, pos];
-    if (cur >= tokens.length || tokens[cur].tipo !== 'PAREN_C') return [false, pos];
-    return [true, cur + 1];
-  }
-
-  return [false, pos];
+  // Expresión incompleta (terminó en estado de espera de operando)
+  return {
+    valid: false,
+    estadoFinal: 'pcERR',
+    mensaje: (estado === 'pc_inicio' || estado === 'pc_unario')
+      ? MSG_PARSER_COUNT['pc_operador']
+      : MSG_PARSER_COUNT['pcERR'],
+  };
 }
 
 export function validarCount(raw: string): ValidacionCount {
@@ -242,30 +308,7 @@ export function validarCount(raw: string): ValidacionCount {
     };
   }
 
-  const [ok, consumidos] = parseSum(tokens, 0);
-  const todosConsumidos = ok && consumidos === tokens.length;
-
-  if (!ok) {
-    return {
-      valid: false,
-      mensaje: MSG_PARSER_COUNT['pcERR'],
-      estadoFinal: 'pcERR',
-    };
-  }
-
-  if (!todosConsumidos) {
-    return {
-      valid: false,
-      mensaje: `Tokens sobrantes después de la expresión`,
-      estadoFinal: 'pcERR',
-    };
-  }
-
-  return {
-    valid: true,
-    mensaje: MSG_PARSER_COUNT['pc_expr_valida'],
-    estadoFinal: 'pc_expr_valida',
-  };
+  return pdaExpresionAritmetica(tokens);
 }
 
 export function validarCountSemantico(raw: string): ValidacionCount {

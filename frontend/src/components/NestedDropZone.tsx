@@ -21,6 +21,7 @@ import { VarBlockNew } from '../blocks/VarBlockNew';
 import { SetVarBlock } from '../blocks/SetVarBlock';
 import { ChangeVarBlock } from '../blocks/ChangeVarBlock';
 import { ShowVarBlock } from '../blocks/ShowVarBlock';
+import { RandomBlock } from '../blocks/RandomBlock';
 import { useAST } from '../context/ASTContext';
 
 const getBlockComponentMap = (): Record<string, React.FC<{ id: string; onDelete?: () => void; onMoveUp?: () => void; onMoveDown?: () => void }>> => ({
@@ -44,6 +45,7 @@ const getBlockComponentMap = (): Record<string, React.FC<{ id: string; onDelete?
   set_var: SetVarBlock,
   change_var: ChangeVarBlock,
   show_var: ShowVarBlock,
+  random: RandomBlock,
 });
 
 function generateId(): string {
@@ -112,13 +114,14 @@ export const NestedDropZone: React.FC<NestedDropZoneProps> = ({
         if (!node) return null;
         const BlockComponent = getBlockComponentMap()[node.type];
         return BlockComponent ? (
-          <BlockComponent 
-            key={childId} 
-            id={childId}
-            onDelete={() => removeNode(childId, parentId, zoneName)}
-            onMoveUp={index > 0 ? () => moveNodeUp(childId, parentId, zoneName) : undefined}
-            onMoveDown={index < childrenIds.length - 1 ? () => moveNodeDown(childId, parentId, zoneName) : undefined}
-          />
+          <div key={childId} id={`block-${childId}`} style={{ display: 'contents' }}>
+            <BlockComponent 
+              id={childId}
+              onDelete={() => removeNode(childId, parentId, zoneName)}
+              onMoveUp={index > 0 ? () => moveNodeUp(childId, parentId, zoneName) : undefined}
+              onMoveDown={index < childrenIds.length - 1 ? () => moveNodeDown(childId, parentId, zoneName) : undefined}
+            />
+          </div>
         ) : null;
       })}
     </div>

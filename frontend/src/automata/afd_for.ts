@@ -1,7 +1,7 @@
 import { afd_id } from './afd_print';
-import { validarCount } from './afd_repeat';
-import { validarExpr } from './parser_expr';
-import type { ParserResult } from './parser_expr';
+import { validarCount } from './dpda_repeat';
+import { validarExpr } from './dpda_expr';
+import type { ParserResult } from './dpda_expr';
 
 export type TipoForInit = 'int' | 'long' | 'size_t';
 const TIPOS_VALIDOS_FOR = new Set<TipoForInit>(['int', 'long', 'size_t']);

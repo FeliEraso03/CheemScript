@@ -1,0 +1,352 @@
+{
+  "nodes": {
+    "arr_1": {
+      "id": "arr_1",
+      "type": "arr",
+      "data": {
+        "dataType": "double",
+        "name": "coeficientes",
+        "size": "3",
+        "values": "1.2, 2.4, 3.6"
+      },
+      "children": {}
+    },
+    "mat_2": {
+      "id": "mat_2",
+      "type": "mat",
+      "data": {
+        "dataType": "int",
+        "name": "sensores",
+        "rows": "2",
+        "cols": "2"
+      },
+      "children": {}
+    },
+    "list_3": {
+      "id": "list_3",
+      "type": "list",
+      "data": {
+        "name": "alertas",
+        "values": "101, 102"
+      },
+      "children": {}
+    },
+    "var_4": {
+      "id": "var_4",
+      "type": "var",
+      "data": {
+        "dataType": "int",
+        "name": "lecturas",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "var_new_5": {
+      "id": "var_new_5",
+      "type": "var_new",
+      "data": {
+        "name": "opcion",
+        "value": "0"
+      },
+      "children": {}
+    },
+    "var_new_6": {
+      "id": "var_new_6",
+      "type": "var_new",
+      "data": {
+        "name": "presion",
+        "value": "0.0"
+      },
+      "children": {}
+    },
+    "ask_7": {
+      "id": "ask_7",
+      "type": "ask",
+      "data": {
+        "variable": "opcion",
+        "question": "\"Seleccione modo (1-Simular, 2-Calibrar, 3-Inspección): \""
+      },
+      "children": {}
+    },
+    "if_8": {
+      "id": "if_8",
+      "type": "if",
+      "data": {
+        "condition": "opcion == 1",
+        "elseIfs": [],
+        "hasElse": true
+      },
+      "children": {
+        "body": [
+          "say_9",
+          "random_10",
+          "set_var_11",
+          "show_var_12",
+          "switch_13"
+        ],
+        "elseBody": [
+          "print_16"
+        ]
+      }
+    },
+    "say_9": {
+      "id": "say_9",
+      "type": "say",
+      "data": {
+        "value": "\"Iniciando simulacion termica...\"",
+        "duration": "3",
+        "unit": "s"
+      },
+      "children": {}
+    },
+    "random_10": {
+      "id": "random_10",
+      "type": "random",
+      "data": {
+        "variable": "presion",
+        "min": "0.0",
+        "max": "5.0",
+        "dataType": "double",
+        "decimals": "2"
+      },
+      "children": {}
+    },
+    "set_var_11": {
+      "id": "set_var_11",
+      "type": "set_var",
+      "data": {
+        "variable": "sensores[0][0]",
+        "value": "presion * 10"
+      },
+      "children": {}
+    },
+    "show_var_12": {
+      "id": "show_var_12",
+      "type": "show_var",
+      "data": {
+        "variable": "presion"
+      },
+      "children": {}
+    },
+    "switch_13": {
+      "id": "switch_13",
+      "type": "switch",
+      "data": {
+        "variable": "opcion",
+        "cases": [
+          {
+            "id": "c1",
+            "value": "1"
+          }
+        ],
+        "hasDefault": true
+      },
+      "children": {
+        "case_c1": [
+          "print_14"
+        ],
+        "default": [
+          "print_15"
+        ]
+      }
+    },
+    "print_14": {
+      "id": "print_14",
+      "type": "print",
+      "data": {
+        "value": "\"Modo automático activo.\""
+      },
+      "children": {}
+    },
+    "print_15": {
+      "id": "print_15",
+      "type": "print",
+      "data": {
+        "value": "\"Modo estándar.\""
+      },
+      "children": {}
+    },
+    "print_16": {
+      "id": "print_16",
+      "type": "print",
+      "data": {
+        "value": "\"Modo alternativo seleccionado.\""
+      },
+      "children": {}
+    },
+    "repeat_17": {
+      "id": "repeat_17",
+      "type": "repeat",
+      "data": {
+        "count": "3",
+        "iterator": "i"
+      },
+      "children": {
+        "body": [
+          "wait_18"
+        ]
+      }
+    },
+    "wait_18": {
+      "id": "wait_18",
+      "type": "wait",
+      "data": {
+        "duration": "1",
+        "unit": "s"
+      },
+      "children": {}
+    },
+    "repeatUntil_19": {
+      "id": "repeatUntil_19",
+      "type": "repeatUntil",
+      "data": {
+        "condition": "lecturas == 3"
+      },
+      "children": {
+        "body": [
+          "change_var_20"
+        ]
+      }
+    },
+    "change_var_20": {
+      "id": "change_var_20",
+      "type": "change_var",
+      "data": {
+        "variable": "lecturas",
+        "amount": "1"
+      },
+      "children": {}
+    },
+    "for_21": {
+      "id": "for_21",
+      "type": "for",
+      "data": {
+        "init": "int k = 0",
+        "condition": "k < 3",
+        "increment": "k++"
+      },
+      "children": {
+        "body": [
+          "print_22"
+        ]
+      }
+    },
+    "print_22": {
+      "id": "print_22",
+      "type": "print",
+      "data": {
+        "value": "\"Coeficiente: \" + to_string(coeficientes[k])"
+      },
+      "children": {}
+    },
+    "while_23": {
+      "id": "while_23",
+      "type": "while",
+      "data": {
+        "condition": "lecturas > 0"
+      },
+      "children": {
+        "body": [
+          "sleep_24",
+          "change_var_25"
+        ]
+      }
+    },
+    "sleep_24": {
+      "id": "sleep_24",
+      "type": "sleep",
+      "data": {
+        "duration": "100"
+      },
+      "children": {}
+    },
+    "change_var_25": {
+      "id": "change_var_25",
+      "type": "change_var",
+      "data": {
+        "variable": "lecturas",
+        "amount": "-1"
+      },
+      "children": {}
+    },
+    "print_26": {
+      "id": "print_26",
+      "type": "print",
+      "data": {
+        "value": "\"Ingrese lectura manual de presion: \""
+      },
+      "children": {}
+    },
+    "input_27": {
+      "id": "input_27",
+      "type": "input",
+      "data": {
+        "variable": "presion",
+        "question": "\"\""
+      },
+      "children": {}
+    },
+    "print_28": {
+      "id": "print_28",
+      "type": "print",
+      "data": {
+        "value": "\"Simulacion del reactor finalizada.\""
+      },
+      "children": {}
+    }
+  },
+  "rootNodes": [
+    "arr_1",
+    "mat_2",
+    "list_3",
+    "var_4",
+    "var_new_5",
+    "var_new_6",
+    "ask_7",
+    "if_8",
+    "repeat_17",
+    "repeatUntil_19",
+    "for_21",
+    "while_23",
+    "print_26",
+    "input_27",
+    "print_28"
+  ],
+  "variables": {
+    "coeficientes": {
+      "name": "coeficientes",
+      "inferredType": "double",
+      "blockId": "arr_1",
+      "firstValue": "1.2, 2.4, 3.6",
+      "createdAt": 1781663705576
+    },
+    "alertas": {
+      "name": "alertas",
+      "inferredType": "int",
+      "blockId": "list_3",
+      "firstValue": "101, 102",
+      "createdAt": 1781663705576
+    },
+    "lecturas": {
+      "name": "lecturas",
+      "inferredType": "int",
+      "blockId": "var_4",
+      "firstValue": "0",
+      "createdAt": 1781663705576
+    },
+    "opcion": {
+      "name": "opcion",
+      "inferredType": "int",
+      "blockId": "var_new_5",
+      "firstValue": "0",
+      "createdAt": 1781663705576
+    },
+    "presion": {
+      "name": "presion",
+      "inferredType": "double",
+      "blockId": "var_new_6",
+      "firstValue": "0.0",
+      "createdAt": 1781663705576
+    }
+  }
+}

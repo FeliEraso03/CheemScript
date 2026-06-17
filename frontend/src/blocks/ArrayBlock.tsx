@@ -55,7 +55,7 @@ export const ArrayBlock: React.FC<ArrayBlockProps> = ({ id, onDelete, onMoveUp, 
           <input
             type="text"
             className={`block-input ${!esNombreValido ? 'input-error' : ''}`}
-            style={{ width: '60px', outline: !esNombreValido ? '1px solid #ff4444' : undefined }}
+            style={{ width: '80px', outline: !esNombreValido ? '1px solid #ff4444' : undefined }}
             placeholder="arr"
             value={name}
             onChange={(e) => updateNodeData(id, { name: e.target.value })}
@@ -64,7 +64,7 @@ export const ArrayBlock: React.FC<ArrayBlockProps> = ({ id, onDelete, onMoveUp, 
           <input
             type="text"
             className={`block-input ${!esTamanioValido ? 'input-error' : ''}`}
-            style={{ width: '40px', outline: !esTamanioValido ? '1px solid #ff4444' : undefined }}
+            style={{ width: '60px', outline: !esTamanioValido ? '1px solid #ff4444' : undefined }}
             placeholder="size"
             value={size}
             onChange={(e) => updateNodeData(id, { size: e.target.value })}
@@ -74,7 +74,7 @@ export const ArrayBlock: React.FC<ArrayBlockProps> = ({ id, onDelete, onMoveUp, 
           <input
             type="text"
             className={`block-input ${!esValorValido ? 'input-error' : ''}`}
-            style={{ width: '80px', outline: !esValorValido ? '1px solid #ff4444' : undefined }}
+            style={{ width: '110px', outline: !esValorValido ? '1px solid #ff4444' : undefined }}
             placeholder="1, 2, 3"
             value={values}
             onChange={(e) => updateNodeData(id, { values: e.target.value })}

@@ -3,6 +3,7 @@ import { BaseBlock } from './BaseBlock';
 import { useAST } from '../context/ASTContext';
 import { validarAmount } from '../automata/afd_var_infer';
 import { validarPrintValue } from '../automata/afd_print';
+import { AutocompleteInput } from '../components/AutocompleteInput';
 
 interface SayBlockProps {
   id: string;
@@ -18,6 +19,7 @@ export const SayBlock: React.FC<SayBlockProps> = ({ id, onDelete, onMoveUp, onMo
 
   const value = node.data.value ?? '';
   const duration = node.data.duration ?? '';
+  const unit = node.data.unit ?? 's';
 
   const validationVal = validarPrintValue(value);
   const esValidoVal = validationVal.valid;
@@ -33,16 +35,16 @@ export const SayBlock: React.FC<SayBlockProps> = ({ id, onDelete, onMoveUp, onMo
       onMoveUp={onMoveUp}
       onMoveDown={onMoveDown}
       hasError={hasError}
+      errorMessage={!esValidoVal ? validationVal.mensaje : (!esValidoDuration ? validationDuration.mensaje : null)}
       title={
         <div className="scratch-title-row">
           <span className="scratch-keyword" style={{ color: 'var(--accent-say)' }}>decir</span>
-          <input
-            type="text"
-            className={`block-input scratch-input ${!esValidoVal ? 'input-error' : ''}`}
-            style={{ width: '140px', outline: !esValidoVal ? '1px solid #ff4444' : undefined }}
+          <AutocompleteInput
+            className={`${!esValidoVal ? 'input-error' : ''}`}
+            style={{ outline: !esValidoVal ? '1px solid #ff4444' : undefined }}
             placeholder='"hola" o variable'
             value={value}
-            onChange={(e) => updateNodeData(id, { value: e.target.value })}
+            onChange={(val) => updateNodeData(id, { value: val })}
           />
           <span className="scratch-label">por</span>
           <input
@@ -51,19 +53,18 @@ export const SayBlock: React.FC<SayBlockProps> = ({ id, onDelete, onMoveUp, onMo
             style={{ outline: !esValidoDuration ? '1px solid #ff4444' : undefined }}
             placeholder="2"
             value={duration}
+            size={Math.max(3, duration.length + 1)}
             onChange={(e) => updateNodeData(id, { duration: e.target.value })}
           />
-          <span className="scratch-label">segs</span>
-          {!esValidoVal && (
-            <span style={{ color: '#ff4444', fontSize: '11px', whiteSpace: 'nowrap' }}>
-              {validationVal.mensaje}
-            </span>
-          )}
-          {!esValidoDuration && (
-            <span style={{ color: '#ff4444', fontSize: '11px', whiteSpace: 'nowrap' }}>
-              {validationDuration.mensaje}
-            </span>
-          )}
+          <select
+            className="block-input scratch-select"
+            value={unit}
+            style={{ width: 'auto' }}
+            onChange={(e) => updateNodeData(id, { unit: e.target.value })}
+          >
+            <option value="s">segundos</option>
+            <option value="ms">milisegundos</option>
+          </select>
         </div>
       }
       category="say"

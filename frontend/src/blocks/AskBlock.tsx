@@ -1,7 +1,9 @@
 import React from 'react';
 import { BaseBlock } from './BaseBlock';
 import { useAST } from '../context/ASTContext';
-import { esString, validarNombreVariable } from '../automata/afd_var_infer';
+import { esString } from '../automata/afd_var_infer';
+import { VariableSelector } from '../components/VariableSelector';
+import { AutocompleteInput } from '../components/AutocompleteInput';
 
 interface AskBlockProps {
   id: string;
@@ -21,7 +23,7 @@ export const AskBlock: React.FC<AskBlockProps> = ({ id, onDelete, onMoveUp, onMo
   const validationQuestion = esString(question);
   const esQuestionValida = validationQuestion.valid;
 
-  const validationVar = validarNombreVariable(variable);
+  const validationVar = variable === '' ? { valid: false, mensaje: 'Debe seleccionar una variable' } : { valid: true, mensaje: 'Variable seleccionada' };
   const esVarValida = validationVar.valid;
 
   const hasError = !esQuestionValida || !esVarValida;
@@ -32,36 +34,23 @@ export const AskBlock: React.FC<AskBlockProps> = ({ id, onDelete, onMoveUp, onMo
       onMoveUp={onMoveUp}
       onMoveDown={onMoveDown}
       hasError={hasError}
+      errorMessage={!esQuestionValida ? validationQuestion.mensaje : (!esVarValida ? validationVar.mensaje : null)}
       title={
         <div className="scratch-title-row">
           <span className="scratch-keyword" style={{ color: 'var(--accent-ask)' }}>preguntar</span>
-          <input
-            type="text"
-            className={`block-input scratch-input ${!esQuestionValida ? 'input-error' : ''}`}
-            style={{ width: '140px', outline: !esQuestionValida ? '1px solid #ff4444' : undefined }}
+          <AutocompleteInput
+            className={`${!esQuestionValida ? 'input-error' : ''}`}
+            style={{ width: '180px', outline: !esQuestionValida ? '1px solid #ff4444' : undefined }}
             placeholder='"Como te llamas?"'
             value={question}
-            onChange={(e) => updateNodeData(id, { question: e.target.value })}
+            onChange={(val) => updateNodeData(id, { question: val })}
           />
           <span className="scratch-label">y guardar respuesta en</span>
-          <input
-            type="text"
-            className={`block-input scratch-input ${!esVarValida ? 'input-error' : ''}`}
-            style={{ width: '80px', outline: !esVarValida ? '1px solid #ff4444' : undefined }}
-            placeholder="variable"
+          <VariableSelector
             value={variable}
-            onChange={(e) => updateNodeData(id, { variable: e.target.value })}
+            onChange={(v) => updateNodeData(id, { variable: v })}
+            placeholder="variable..."
           />
-          {!esQuestionValida && (
-            <span style={{ color: '#ff4444', fontSize: '11px', whiteSpace: 'nowrap' }}>
-              Pregunta: {validationQuestion.mensaje}
-            </span>
-          )}
-          {!esVarValida && (
-            <span style={{ color: '#ff4444', fontSize: '11px', whiteSpace: 'nowrap' }}>
-              Variable: {validationVar.mensaje}
-            </span>
-          )}
         </div>
       }
       category="ask"
