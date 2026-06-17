@@ -32,6 +32,7 @@ El proyecto implementa dos clases de autómatas:
 | 15 | afd_for.ts | `validarIncrement` — Incremento for | AFD | Correcto |
 | 16 | dpda_repeat.ts | `pdaExpresionAritmetica` — Expresiones aritméticas | DPDA | Correcto |
 | 17 | dpda_expr.ts | `pdaExpresion` — Expresiones booleanas/relacionales | DPDA | Correcto |
+| 18 | afd_var_infer.ts | `validarTamanioOVariable` — Tamaño con variables | Validador compuesto | Correcto |
 
 ---
 
@@ -478,6 +479,44 @@ Los lenguajes que involucran paréntesis balanceados anidados no son regulares. 
 
 ---
 
+### 4.16. Validador Compuesto 18 — `validarTamanioOVariable`: Tamaño con variables y expresiones
+
+**Archivo**: `afd_var_infer.ts`, función `validarTamanioOVariable`
+
+**Propósito**: Validar el contenido dentro de los corchetes `[]` en la declaración de arreglos y matrices, aceptando no solo enteros positivos sino también variables y expresiones aritméticas.
+
+**Clasificación**: Validador compuesto (no es un autómata único, sino una composición de autómatas existentes)
+
+**Autómatas delegados**:
+1. `esEntero` (AFD 6) — Para validar literales enteros, con verificación semántica de positividad (> 0)
+2. `afd_id` (AFD 2) — Para validar identificadores/variables, con verificación de que no sea palabra reservada de C++
+3. `validarExpr` (DPDA 17) — Para validar expresiones aritméticas como `n + 1`, `rows * 2`
+
+**Algoritmo de decisión**:
+
+```
+validarTamanioOVariable(raw):
+  1. Si raw está vacío → rechazar
+  2. Si esEntero(raw) es válido:
+     a. Si parseInt(raw) > 0 → aceptar como "Tamaño numérico válido"
+     b. Si parseInt(raw) <= 0 → rechazar ("debe ser mayor a 0")
+  3. Si afd_id(raw) es válido:
+     a. Si raw es palabra reservada de C++ → rechazar
+     b. Sino → aceptar como "Variable válida como tamaño"
+  4. Si validarExpr(raw) es válido → aceptar como "Expresión válida como tamaño"
+  5. Sino → rechazar
+```
+
+**Ejemplos de cadenas aceptadas**: `5`, `10`, `n`, `size`, `n + 1`, `rows * 2`, `arr[i]`
+
+**Ejemplos de cadenas rechazadas**: `""` (vacío), `0`, `-1`, `3.14`, `int` (reservada), `@#$`
+
+**Veredicto**: Validador compuesto correcto. No introduce un nuevo autómata formal sino que compone los autómatas existentes (AFD 6, AFD 2, DPDA 17) mediante un esquema de prioridad cascada. La prioridad (entero → identificador → expresión) garantiza que un literal como `5` sea reconocido como entero y validado semánticamente antes de intentar reconocerlo como expresión.
+
+**Contexto de uso**: Utilizado por `ArrayBlock` (campo `size`) y `MatrixBlock` (campos `rows` y `cols`). Reemplaza al validador anterior `validarTamanio` que solo aceptaba enteros positivos.
+
+---
+
 ## 5. Autómatas de Pila Deterministas (DPDA)
 
 ### 5.1. DPDA 16 — `pdaExpresionAritmetica`: Expresiones aritméticas con paréntesis
@@ -605,12 +644,16 @@ Las siguientes correcciones fueron identificadas durante el análisis e implemen
 | 3 | `dpda_expr.ts` | Reescrito el parser recursivo descendente (`parseOr/parseAnd/parseNot/parseRel/parseArith/parseFactor`) como DPDA explícito con pila visible |
 | 4 | Renombrado | `afd_repeat.ts` renombrado a `dpda_repeat.ts` para reflejar la estructura matemática dominante |
 | 5 | Renombrado | `parser_expr.ts` renombrado a `dpda_expr.ts` para reflejar la estructura matemática dominante |
+| 6 | `afd_var_infer.ts` | Agregada función `validarTamanioOVariable` que extiende `validarTamanio` para aceptar identificadores (AFD 2) y expresiones aritméticas (DPDA 17) además de enteros positivos, permitiendo el uso de variables y expresiones dentro de `[]` en arreglos y matrices |
+| 7 | `ArrayBlock.tsx` | Actualizado para usar `validarTamanioOVariable` en lugar de `validarTamanio` en el campo `size` |
+| 8 | `MatrixBlock.tsx` | Actualizado para usar `validarTamanioOVariable` en lugar de `validarTamanio` en los campos `rows` y `cols` |
+| 9 | `generator.ts` | Corregido bug en la generación de código para bloques `input` y `ask` con variables de tipo `string`: se reemplazó `cin.ignore(numeric_limits<streamsize>::max(), '\n')` por `fflush(stdin)` antes de `getline()`, eliminando el problema donde el programa se "colgaba" si no existía un `cin >>` previo que dejara un `\n` pendiente en el buffer |
 
 ---
 
 ## 7. Conclusión
 
-El proyecto CheemScript implementa un total de **17 autómatas** para la validación sintáctica de su lenguaje:
+El proyecto CheemScript implementa un total de **17 autómatas** y **1 validador compuesto** para la validación sintáctica de su lenguaje:
 
 - **15 Autómatas Finitos Deterministas (AFD)** que reconocen lenguajes regulares. Todos cumplen con las propiedades formales exigidas por la teoría:
   1. **Determinismo**: para cada par (estado, símbolo) existe exactamente una transición definida.
@@ -620,5 +663,7 @@ El proyecto CheemScript implementa un total de **17 autómatas** para la validac
   5. **Terminación garantizada**: procesan la entrada símbolo a símbolo sin ciclos infinitos sobre la misma posición.
 
 - **2 Autómatas de Pila Deterministas (DPDA)** que reconocen lenguajes libres de contexto. Ambos emplean una pila explícita con alfabeto {Z0, PAREN} para el balanceo de paréntesis, y cumplen con la definición formal de 7-tupla. La necesidad de estos autómatas se justifica teóricamente por el Lema de Bombeo: los lenguajes con paréntesis anidados no son regulares y, por tanto, no pueden ser reconocidos por un AFD.
+
+- **1 Validador compuesto** (`validarTamanioOVariable`) que compone los autómatas existentes (AFD 6 `esEntero`, AFD 2 `afd_id`, DPDA 17 `validarExpr`) mediante un esquema de prioridad cascada para validar tamaños de arreglos y matrices, aceptando enteros positivos, identificadores y expresiones aritméticas.
 
 Todos los autómatas del proyecto son fieles a la teoría de la computación y se ubican correctamente en la jerarquía de Chomsky según la clase de lenguaje que reconocen.

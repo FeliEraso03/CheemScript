@@ -1,7 +1,7 @@
 import React from 'react';
 import { BaseBlock } from './BaseBlock';
 import { useAST } from '../context/ASTContext';
-import { validarNombreVariable, validarTamanio, validarListaValores, type TipoExplicito } from '../automata/afd_var_infer';
+import { validarNombreVariable, validarTamanioOVariable, validarListaValores, type TipoExplicito } from '../automata/afd_var_infer';
 
 interface ArrayBlockProps {
   id: string;
@@ -23,7 +23,7 @@ export const ArrayBlock: React.FC<ArrayBlockProps> = ({ id, onDelete, onMoveUp, 
   const validationName = validarNombreVariable(name);
   const esNombreValido = validationName.valid;
 
-  const validationSize = validarTamanio(size);
+  const validationSize = validarTamanioOVariable(size);
   const esTamanioValido = validationSize.valid;
 
   const validationVal = validarListaValores(values, dataType as TipoExplicito);

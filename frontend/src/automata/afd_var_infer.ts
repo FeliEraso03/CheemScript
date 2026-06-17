@@ -427,6 +427,43 @@ export function validarTamanio(raw: string): ResultValidation {
   return { valid: true, mensaje: 'Tamaño válido' };
 }
 
+// ── Validador: tamaño de arreglo/matriz (acepta variables y expresiones) ──────
+// Acepta: entero positivo, identificador válido, o expresión aritmética
+// Utilizado en ArrayBlock y MatrixBlock para los campos dentro de []
+
+export function validarTamanioOVariable(raw: string): ResultValidation {
+  const s = raw.trim();
+  if (s === '') {
+    return { valid: false, mensaje: 'El tamaño no puede estar vacío' };
+  }
+
+  // 1. Si es un entero, verificar que sea positivo
+  const rEntero = esEntero(s);
+  if (rEntero.valid) {
+    const n = parseInt(s, 10);
+    if (n <= 0) {
+      return { valid: false, mensaje: 'El tamaño debe ser mayor a 0' };
+    }
+    return { valid: true, mensaje: 'Tamaño numérico válido' };
+  }
+
+  // 2. Si es un identificador válido (variable, incluyendo acceso a arreglos como arr[i])
+  if (afd_id(s)) {
+    if (RESERVED_CPP.has(s)) {
+      return { valid: false, mensaje: `"${s}" es una palabra reservada de C++` };
+    }
+    return { valid: true, mensaje: 'Variable válida como tamaño' };
+  }
+
+  // 3. Si es una expresión aritmética válida (ej: n + 1, rows * 2)
+  const exprRes = validarExpr(s);
+  if (exprRes.valid) {
+    return { valid: true, mensaje: 'Expresión válida como tamaño' };
+  }
+
+  return { valid: false, mensaje: 'Debe ser un entero positivo, una variable o una expresión (ej: 5, n, n + 1)' };
+}
+
 // ── Validador: valores de inicialización (listas, arreglos) ──────────────────
 // Acepta: lista de literales separados por coma, todos compatibles con el tipo
 

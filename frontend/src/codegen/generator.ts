@@ -18,7 +18,7 @@ export function generateCppCode(
   code += '#include <chrono>\n';
   code += '#include <vector>\n';
   code += '#include <string>\n';
-  code += '#include <limits>\n';
+  code += '#include <cstdio>\n';
   code += '#include <random>\n';
   code += '#include <cmath>\n\n';
   code += 'using namespace std;\n\n';
@@ -209,7 +209,7 @@ function generateNodeCode(
       const isString = variables[variable]?.inferredType === 'string';
       code += `${indent}cout << ${question};\n`;
       if (isString) {
-        code += `${indent}cin.ignore(numeric_limits<streamsize>::max(), '\\n');\n`;
+        code += `${indent}fflush(stdin);\n`;
         code += `${indent}getline(cin, ${variable});\n`;
       } else {
         code += `${indent}cin >> ${variable};\n`;
@@ -257,7 +257,7 @@ function generateNodeCode(
       const isStringAsk = variables[varAsk]?.inferredType === 'string';
       code += `${indent}cout << ${qAsk} << endl;\n`;
       if (isStringAsk) {
-        code += `${indent}cin.ignore(numeric_limits<streamsize>::max(), '\\n');\n`;
+        code += `${indent}fflush(stdin);\n`;
         code += `${indent}getline(cin, ${varAsk});\n`;
       } else {
         code += `${indent}cin >> ${varAsk};\n`;

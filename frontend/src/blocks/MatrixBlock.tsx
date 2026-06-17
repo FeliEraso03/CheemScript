@@ -1,7 +1,7 @@
 import React from 'react';
 import { BaseBlock } from './BaseBlock';
 import { useAST } from '../context/ASTContext';
-import { validarNombreVariable, validarTamanio } from '../automata/afd_var_infer';
+import { validarNombreVariable, validarTamanioOVariable } from '../automata/afd_var_infer';
 
 interface MatrixBlockProps {
   id: string;
@@ -23,10 +23,10 @@ export const MatrixBlock: React.FC<MatrixBlockProps> = ({ id, onDelete, onMoveUp
   const validationName = validarNombreVariable(name);
   const esNombreValido = validationName.valid;
 
-  const validationRows = validarTamanio(rows);
+  const validationRows = validarTamanioOVariable(rows);
   const esRowsValido = validationRows.valid;
 
-  const validationCols = validarTamanio(cols);
+  const validationCols = validarTamanioOVariable(cols);
   const esColsValido = validationCols.valid;
 
   const hasError = !esNombreValido || !esRowsValido || !esColsValido;
