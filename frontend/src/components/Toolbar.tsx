@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAST } from '../context/ASTContext';
 import { generateCppCode } from '../codegen/generator';
+import { ConfirmModal } from './ConfirmModal';
 
 interface ToolbarProps {
   isCodeVisible: boolean;
@@ -11,6 +12,7 @@ interface ToolbarProps {
 export const Toolbar: React.FC<ToolbarProps> = ({ isCodeVisible, setIsCodeVisible, setCodePanelWidth, setRightPanelTab }) => {
   const { nodes, rootNodes, variables, consoleStatus, setConsoleStatus, clearCheemsMessages, addCheemsMessage, isTracingEnabled, setIsTracingEnabled, activeBlockId, setActiveBlockId, loadState } = useAST();
   const [isCompiling, setIsCompiling] = useState(false);
+  const [isClearModalOpen, setIsClearModalOpen] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleExportJson = () => {
@@ -150,6 +152,12 @@ export const Toolbar: React.FC<ToolbarProps> = ({ isCodeVisible, setIsCodeVisibl
           if (text.includes('__CHEEMS_CLEAR__')) {
             if (clearCheemsMessages) clearCheemsMessages();
             text = text.replace(/__CHEEMS_CLEAR__(?:\r?\n)?/g, '');
+          }
+
+          // Extract waiting input signals
+          if (text.includes('__CHEEMS_WAITING_INPUT__')) {
+            setConsoleStatus((prev: any) => ({ ...prev, isWaitingForInput: true }));
+            text = text.replace(/__CHEEMS_WAITING_INPUT__(?:\r?\n)?/g, '');
           }
 
           // Extract ALL trace signals
@@ -295,6 +303,30 @@ export const Toolbar: React.FC<ToolbarProps> = ({ isCodeVisible, setIsCodeVisibl
           </button>
         </div>
       )}
+
+      <button 
+        className="toolbar-btn" 
+        onClick={() => setIsClearModalOpen(true)}
+        style={{ backgroundColor: 'rgba(255, 60, 60, 0.2)', borderColor: 'rgba(255, 60, 60, 0.4)', marginLeft: '12px' }}
+      >
+        Limpiar Todo
+      </button>
+
+      <ConfirmModal 
+        isOpen={isClearModalOpen}
+        title="Limpiar Área de Trabajo"
+        message="¿Estás seguro de que deseas borrar todos los bloques actuales? Todo tu progreso no guardado se perderá de forma permanente."
+        confirmText="Sí, borrar todo"
+        cancelText="Cancelar"
+        onConfirm={() => {
+          if (isCompiling && consoleStatus.killProcess) {
+            consoleStatus.killProcess();
+          }
+          if (loadState) loadState({}, [], {});
+          setIsClearModalOpen(false);
+        }}
+        onCancel={() => setIsClearModalOpen(false)}
+      />
     </header>
   );
 };

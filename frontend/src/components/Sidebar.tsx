@@ -262,7 +262,12 @@ export const Sidebar: React.FC = () => {
 
   return (
     <aside className="sidebar">
-      <div className="sidebar-brand">
+      <div 
+        className="sidebar-brand" 
+        onClick={() => window.location.hash = '#welcome'} 
+        style={{ cursor: 'pointer' }}
+        title="Volver a la presentación del proyecto"
+      >
         <img src={logoImg} alt="CheemScript logo" className="sidebar-logo" />
         <span className="sidebar-title">CheemScript</span>
       </div>

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAST } from '../context/ASTContext';
 
 export const Console: React.FC = () => {
-  const { consoleStatus } = useAST();
+  const { consoleStatus, setConsoleStatus } = useAST();
   const [inputValue, setInputValue] = useState('');
   const endOfConsoleRef = useRef<HTMLDivElement>(null);
   
@@ -62,6 +62,7 @@ export const Console: React.FC = () => {
     if (consoleStatus.sendInput) {
       consoleStatus.sendInput(inputValue);
       setInputValue('');
+      setConsoleStatus(prev => ({ ...prev, isWaitingForInput: false }));
     }
   };
 
@@ -99,7 +100,7 @@ export const Console: React.FC = () => {
             {line.type === 'stdin' ? '> ' : ''}{line.text}
           </div>
         ))}
-        {consoleStatus.status === 'running' && (
+        {consoleStatus.status === 'running' && consoleStatus.isWaitingForInput && (
           <form onSubmit={handleInputSubmit} style={{ display: 'flex', marginTop: '4px' }}>
             <span style={{ color: '#27AE60', marginRight: '8px' }}>$</span>
             <input 

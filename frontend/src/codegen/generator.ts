@@ -208,11 +208,15 @@ function generateNodeCode(
       const variable = node.data.variable ?? '';
       const isString = variables[variable]?.inferredType === 'string';
       code += `${indent}cout << ${question};\n`;
+      code += `${indent}cout << "__CHEEMS_WAITING_INPUT__" << endl;\n`;
       if (isString) {
         code += `${indent}fflush(stdin);\n`;
         code += `${indent}getline(cin, ${variable});\n`;
       } else {
-        code += `${indent}cin >> ${variable};\n`;
+        code += `${indent}if (!(cin >> ${variable})) {\n`;
+        code += `${indent}    cin.clear();\n`;
+        code += `${indent}}\n`;
+        code += `${indent}cin.ignore(10000, '\\n');\n`;
       }
       break;
     }
@@ -256,11 +260,15 @@ function generateNodeCode(
       const varAsk = node.data.variable ?? 'respuesta';
       const isStringAsk = variables[varAsk]?.inferredType === 'string';
       code += `${indent}cout << ${qAsk} << endl;\n`;
+      code += `${indent}cout << "__CHEEMS_WAITING_INPUT__" << endl;\n`;
       if (isStringAsk) {
         code += `${indent}fflush(stdin);\n`;
         code += `${indent}getline(cin, ${varAsk});\n`;
       } else {
-        code += `${indent}cin >> ${varAsk};\n`;
+        code += `${indent}if (!(cin >> ${varAsk})) {\n`;
+        code += `${indent}    cin.clear();\n`;
+        code += `${indent}}\n`;
+        code += `${indent}cin.ignore(10000, '\\n');\n`;
       }
       break;
     }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import bannerImg from "../assets/banner.png";
 import logoImg from "../assets/logo.png";
 
@@ -16,29 +16,55 @@ const MEMBERS = [
 ];
 
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStart }) => {
+  const [isFlipped, setIsFlipped] = useState(false);
+
   return (
     <div className="welcome-root">
       {/* Panel izquierdo — Banner y Descripcion */}
-      <div className="welcome-left-panel">
-        <div className="welcome-banner-wrapper">
-          <img
-            src={bannerImg}
-            alt="CheemScript — Modelo AFD Estados y Transiciones"
-            className="welcome-banner-img"
-          />
-        </div>
-        <div className="welcome-description-box">
-          <p className="welcome-desc-text">
-            CheemScript es un entorno visual de programación que combina
-            aprendizaje interactivo y fundamentos de lenguajes formales. A
-            través de bloques intuitivos, los usuarios pueden construir
-            algoritmos, recibir validación en tiempo real mediante autómatas
-            finitos deterministas y comprender cómo sus soluciones se
-            transforman automáticamente en código C++. Además, la plataforma
-            permite compilar y ejecutar los programas generados, conectando la
-            teoría de la computación con la práctica del desarrollo de software.
-          </p>
-          <p className="welcome-tagline">Much code. Very compile. Wow.</p>
+      <div className="welcome-left-panel" onClick={() => setIsFlipped(!isFlipped)}>
+        <div className={`welcome-flip-card ${isFlipped ? 'flipped' : ''}`}>
+          <div className="welcome-flip-card-front">
+            <div className="welcome-banner-wrapper">
+              <img
+                src={bannerImg}
+                alt="CheemScript — Modelo AFD Estados y Transiciones"
+                className="welcome-banner-img"
+              />
+            </div>
+            <div className="welcome-description-box">
+              <p className="welcome-desc-text">
+                CheemScript es un entorno visual de programación que combina
+                aprendizaje interactivo y fundamentos de lenguajes formales. A
+                través de bloques intuitivos, los usuarios pueden construir
+                algoritmos, recibir validación en tiempo real mediante autómatas
+                finitos deterministas y comprender cómo sus soluciones se
+                transforman automáticamente en código C++. Además, la plataforma
+                permite compilar y ejecutar los programas generados, conectando la
+                teoría de la computación con la práctica del desarrollo de software.
+              </p>
+              <p className="welcome-tagline">Much code. Very compile. Wow. (Click para voltear)</p>
+            </div>
+          </div>
+          <div className="welcome-flip-card-back">
+            <h2>Sobre CheemScript y Autómatas</h2>
+            <p>
+              Los <strong>Autómatas Finitos Deterministas (AFD)</strong> son modelos matemáticos de computación con estados y transiciones bien definidos, que aceptan o rechazan cadenas de símbolos.
+            </p>
+            <p>
+              En <strong>CheemScript</strong>, cada bloque que conectas es validado como una transición en un AFD subyacente, garantizando la corrección de tus algoritmos antes de convertirse en código C++.
+            </p>
+            <div style={{ textAlign: 'left', marginTop: '0.5rem', background: 'rgba(0,0,0,0.03)', padding: '0.8rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)' }}>
+              <h3 style={{ fontSize: '1rem', marginBottom: '0.4rem', color: '#444' }}>Características Principales:</h3>
+              <ul style={{ paddingLeft: '1.2rem', color: '#555', fontSize: '0.85rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                <li><strong>Basado en Scratch:</strong> Un entorno visual familiar e intuitivo mediante arrastrar y soltar bloques.</li>
+                <li><strong>Programación Visual:</strong> Olvídate de la sintaxis estricta y enfócate en la lógica.</li>
+                <li><strong>Generador de Código:</strong> Traduce automáticamente tus diagramas a código C++ listo para usar.</li>
+                <li><strong>Validación por AFD:</strong> Evita errores en tiempo real usando teoría de lenguajes formales.</li>
+                <li><strong>Ejecución Integrada:</strong> Compila y ejecuta el código generado directamente en el navegador.</li>
+              </ul>
+            </div>
+            <p className="welcome-tagline" style={{ marginTop: '0.8rem' }}>(Click para volver)</p>
+          </div>
         </div>
       </div>
 

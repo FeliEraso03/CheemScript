@@ -1,0 +1,145 @@
+{
+  "nodes": {
+    "n_v1": {
+      "id": "n_v1",
+      "type": "var_new",
+      "data": { "name": "puntos_usuario", "value": "0" }
+    },
+    "n_v2": {
+      "id": "n_v2",
+      "type": "var_new",
+      "data": { "name": "puntos_cpu", "value": "0" }
+    },
+    "n_v3": {
+      "id": "n_v3",
+      "type": "var_new",
+      "data": { "name": "eleccion_usuario", "value": "0" }
+    },
+    "n_v4": {
+      "id": "n_v4",
+      "type": "var_new",
+      "data": { "name": "eleccion_cpu", "value": "0" }
+    },
+    "n_say1": {
+      "id": "n_say1",
+      "type": "say",
+      "data": { "value": "\"¡Juguemos Piedra, Papel o Tijera! El primero en ganar 3 rondas gana.\"", "duration": "3", "unit": "s" }
+    },
+    "n_loop": {
+      "id": "n_loop",
+      "type": "repeatUntil",
+      "data": { "condition": "puntos_usuario == 3 || puntos_cpu == 3" },
+      "children": {
+        "body": ["n_say2", "n_ask", "n_rnd", "n_switch", "n_if", "n_score_say1", "n_score_u", "n_wait_u", "n_score_say2", "n_score_c", "n_wait_c"]
+      }
+    },
+    "n_say2": {
+      "id": "n_say2",
+      "type": "say",
+      "data": { "value": "\"1: Piedra, 2: Papel, 3: Tijera\"", "duration": "2", "unit": "s" }
+    },
+    "n_ask": {
+      "id": "n_ask",
+      "type": "ask",
+      "data": { "question": "\"Elige una opcion (1-3):\"", "variable": "eleccion_usuario" }
+    },
+    "n_rnd": {
+      "id": "n_rnd",
+      "type": "random",
+      "data": { "variable": "eleccion_cpu", "min": "1", "max": "3", "dataType": "int" }
+    },
+    "n_switch": {
+      "id": "n_switch",
+      "type": "switch",
+      "data": {
+        "variable": "eleccion_cpu",
+        "hasDefault": false,
+        "cases": [
+          { "id": "c1", "value": "1" },
+          { "id": "c2", "value": "2" },
+          { "id": "c3", "value": "3" }
+        ]
+      },
+      "children": {
+        "case_c1": ["n_s_c1"],
+        "case_c2": ["n_s_c2"],
+        "case_c3": ["n_s_c3"]
+      }
+    },
+    "n_s_c1": { "id": "n_s_c1", "type": "say", "data": { "value": "\"La CPU eligio Piedra\"", "duration": "2", "unit": "s" } },
+    "n_s_c2": { "id": "n_s_c2", "type": "say", "data": { "value": "\"La CPU eligio Papel\"", "duration": "2", "unit": "s" } },
+    "n_s_c3": { "id": "n_s_c3", "type": "say", "data": { "value": "\"La CPU eligio Tijera\"", "duration": "2", "unit": "s" } },
+    "n_if": {
+      "id": "n_if",
+      "type": "if",
+      "data": {
+        "condition": "eleccion_usuario == eleccion_cpu",
+        "hasElse": true,
+        "elseIfs": [
+          { "id": "ei1", "condition": "(eleccion_usuario == 1 && eleccion_cpu == 3) || (eleccion_usuario == 2 && eleccion_cpu == 1) || (eleccion_usuario == 3 && eleccion_cpu == 2)" }
+        ]
+      },
+      "children": {
+        "body": ["n_empate"],
+        "elseIf_ei1": ["n_ganar", "n_add_u"],
+        "elseBody": ["n_perder", "n_add_c"]
+      }
+    },
+    "n_empate": { "id": "n_empate", "type": "say", "data": { "value": "\"¡Empate! Nadie gana puntos.\"", "duration": "2", "unit": "s" } },
+    "n_ganar": { "id": "n_ganar", "type": "say", "data": { "value": "\"¡Ganaste esta ronda!\"", "duration": "2", "unit": "s" } },
+    "n_add_u": { "id": "n_add_u", "type": "change_var", "data": { "variable": "puntos_usuario", "amount": "1" } },
+    "n_perder": { "id": "n_perder", "type": "say", "data": { "value": "\"Perdiste esta ronda...\"", "duration": "2", "unit": "s" } },
+    "n_add_c": { "id": "n_add_c", "type": "change_var", "data": { "variable": "puntos_cpu", "amount": "1" } },
+    "n_score_say1": { "id": "n_score_say1", "type": "say", "data": { "value": "\"Tus puntos son:\"", "duration": "1", "unit": "s" } },
+    "n_score_u": { "id": "n_score_u", "type": "show_var", "data": { "variable": "puntos_usuario" } },
+    "n_wait_u": { "id": "n_wait_u", "type": "wait", "data": { "duration": "2", "unit": "s" } },
+    "n_score_say2": { "id": "n_score_say2", "type": "say", "data": { "value": "\"Puntos de la CPU:\"", "duration": "1", "unit": "s" } },
+    "n_score_c": { "id": "n_score_c", "type": "show_var", "data": { "variable": "puntos_cpu" } },
+    "n_wait_c": { "id": "n_wait_c", "type": "wait", "data": { "duration": "2", "unit": "s" } },
+    "n_final_if": {
+      "id": "n_final_if",
+      "type": "if",
+      "data": {
+        "condition": "puntos_usuario == 3",
+        "hasElse": true
+      },
+      "children": {
+        "body": ["n_final_win"],
+        "elseBody": ["n_final_lose"]
+      }
+    },
+    "n_final_win": { "id": "n_final_win", "type": "say", "data": { "value": "\"¡Felicidades! Has ganado la partida.\"", "duration": "4", "unit": "s" } },
+    "n_final_lose": { "id": "n_final_lose", "type": "say", "data": { "value": "\"Has perdido. ¡Suerte a la proxima!\"", "duration": "4", "unit": "s" } }
+  },
+  "rootNodes": ["n_v1", "n_v2", "n_v3", "n_v4", "n_say1", "n_loop", "n_final_if"],
+  "variables": {
+    "puntos_usuario": {
+      "name": "puntos_usuario",
+      "inferredType": "int",
+      "firstValue": "0",
+      "blockId": "n_v1",
+      "createdAt": 1718790000000
+    },
+    "puntos_cpu": {
+      "name": "puntos_cpu",
+      "inferredType": "int",
+      "firstValue": "0",
+      "blockId": "n_v2",
+      "createdAt": 1718790000001
+    },
+    "eleccion_usuario": {
+      "name": "eleccion_usuario",
+      "inferredType": "int",
+      "firstValue": "0",
+      "blockId": "n_v3",
+      "createdAt": 1718790000002
+    },
+    "eleccion_cpu": {
+      "name": "eleccion_cpu",
+      "inferredType": "int",
+      "firstValue": "0",
+      "blockId": "n_v4",
+      "createdAt": 1718790000003
+    }
+  }
+}
