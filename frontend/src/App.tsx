@@ -14,6 +14,7 @@ type AppView = 'welcome' | 'editor';
 import { ASTProvider } from './context/ASTContext';
 
 function App() {
+  const [isBackendReady, setIsBackendReady] = useState(false);
   const [view, setView] = useState<AppView>(() => {
     return window.location.hash === '#editor' ? 'editor' : 'welcome';
   });
@@ -29,10 +30,43 @@ function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
+  useEffect(() => {
+    let interval: number;
+    const checkHealth = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || '';
+        const res = await fetch(`${apiUrl}/health`);
+        if (res.ok) {
+          setIsBackendReady(true);
+          clearInterval(interval);
+        }
+      } catch (e) {
+        // Silently retry
+      }
+    };
+
+    checkHealth();
+    interval = window.setInterval(checkHealth, 2500);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const handleStart = () => {
     window.location.hash = 'editor';
     setView('editor');
   };
+
+  if (!isBackendReady) {
+    return (
+      <div className="global-loader-container">
+        <div className="global-loader-content">
+          <div className="loader-spinner"></div>
+          <h2>Despertando al servidor Cheems...</h2>
+          <p>Preparando servicios. Esto puede tardar unos segundos si el backend estaba en reposo.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (view === 'welcome') {
     return <WelcomeScreen onStart={handleStart} />;

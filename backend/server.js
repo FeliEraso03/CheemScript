@@ -7,13 +7,32 @@ const WebSocket = require('ws');
 const http = require('http');
 
 const app = express();
-app.use(cors());
+const allowedOrigins = [
+  'http://localhost:5173', 
+  'http://localhost:4173', 
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Permitir requests sin origin (como cURL) o desde localhost / FRONTEND_URL
+    if (!origin || origin.startsWith('http://localhost') || origin === process.env.FRONTEND_URL) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
 app.use(express.json());
 
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 const activeProcesses = new Map();
+
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
 
 app.post('/api/compilar', async (req, res) => {
   const { codigo } = req.body;
@@ -102,4 +121,5 @@ wss.on('connection', (ws, req) => {
   });
 });
 
-server.listen(3001, () => console.log('CheemScript compiler backend running on :3001 with WS'));
+const port = process.env.PORT || 3001;
+server.listen(port, () => console.log(`CheemScript compiler backend running on :${port} with WS`));

@@ -101,7 +101,8 @@ export const Toolbar: React.FC<ToolbarProps> = ({ isCodeVisible, setIsCodeVisibl
       // Hack: we store sourceMap on window so CodeView can read it easily without more context wiring
       (window as any)._cheemsSourceMap = sourceMap;
 
-      const response = await fetch('/api/compilar', {
+      const apiUrl = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${apiUrl}/api/compilar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ codigo: code })
@@ -127,10 +128,10 @@ export const Toolbar: React.FC<ToolbarProps> = ({ isCodeVisible, setIsCodeVisibl
 
       // Conectar WebSocket
       const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      // Asumimos que el backend está en el mismo host pero puerto 3001 si estamos en dev local,
-      // o a través del proxy de Vite en '/api' pero WS no pasa por el proxy igual.
-      // Mejor construimos la URL usando el hostname
-      const wsUrl = `${wsProtocol}//${window.location.hostname}:3001/?sessionId=${result.sessionId}`;
+      const defaultWsUrl = `${wsProtocol}//${window.location.hostname}:3001/?sessionId=${result.sessionId}`;
+      const wsUrl = import.meta.env.VITE_WS_URL 
+        ? `${import.meta.env.VITE_WS_URL}/?sessionId=${result.sessionId}`
+        : defaultWsUrl;
       const ws = new WebSocket(wsUrl);
 
       let currentLines: any[] = [{ type: 'system', text: 'Compilado con éxito. Ejecutando...' }];
