@@ -15,12 +15,23 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Permitir requests sin origin (como cURL) o desde localhost / FRONTEND_URL
-    if (!origin || origin.startsWith('http://localhost') || origin === process.env.FRONTEND_URL) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
+    // Permitir peticiones sin origin (como cURL, Postman)
+    if (!origin) return callback(null, true);
+
+    // Permitir cualquier localhost
+    if (origin.startsWith('http://localhost')) return callback(null, true);
+
+    // Verificar FRONTEND_URL ignorando barras al final
+    if (process.env.FRONTEND_URL) {
+      const cleanOrigin = origin.replace(/\/$/, '');
+      const cleanEnv = process.env.FRONTEND_URL.replace(/\/$/, '');
+      if (cleanOrigin === cleanEnv) {
+        return callback(null, true);
+      }
     }
+
+    // Si no coincide, rechazar sin lanzar error 500
+    callback(null, false);
   }
 }));
 app.use(express.json());
