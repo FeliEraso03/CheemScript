@@ -1,0 +1,311 @@
+{
+  "nodes": {
+    "node_0": {
+      "id": "node_0",
+      "type": "sleep",
+      "data": {
+        "duration": "360"
+      }
+    },
+    "node_1": {
+      "id": "node_1",
+      "type": "say",
+      "data": {
+        "value": "\"Mi buen amor\"",
+        "duration": "7260",
+        "unit": "ms"
+      }
+    },
+    "node_2": {
+      "id": "node_2",
+      "type": "say",
+      "data": {
+        "value": "\"Pues, la verdad, no hay otra cosa que yo pueda hacer\"",
+        "duration": "8090",
+        "unit": "ms"
+      }
+    },
+    "node_3": {
+      "id": "node_3",
+      "type": "say",
+      "data": {
+        "value": "\"Tú no cambiarás, no me vas a convencer\"",
+        "duration": "5610",
+        "unit": "ms"
+      }
+    },
+    "node_4": {
+      "id": "node_4",
+      "type": "say",
+      "data": {
+        "value": "\"De que ahora sí, todo va a estar bien\"",
+        "duration": "7300",
+        "unit": "ms"
+      }
+    },
+    "node_5": {
+      "id": "node_5",
+      "type": "sleep",
+      "data": {
+        "duration": "2980"
+      }
+    },
+    "node_6": {
+      "id": "node_6",
+      "type": "say",
+      "data": {
+        "value": "\"¿Hasta cuándo seguirás pensando\"",
+        "duration": "13980",
+        "unit": "ms"
+      }
+    },
+    "node_7": {
+      "id": "node_7",
+      "type": "say",
+      "data": {
+        "value": "\"Que puedes jugar a pedir sin nada dar?\"",
+        "duration": "5380",
+        "unit": "ms"
+      }
+    },
+    "node_8": {
+      "id": "node_8",
+      "type": "say",
+      "data": {
+        "value": "\"Pues, ahora no estaré esperando\"",
+        "duration": "8690",
+        "unit": "ms"
+      }
+    },
+    "node_9": {
+      "id": "node_9",
+      "type": "say",
+      "data": {
+        "value": "\"Mi buen amor\"",
+        "duration": "7360",
+        "unit": "ms"
+      }
+    },
+    "node_10": {
+      "id": "node_10",
+      "type": "say",
+      "data": {
+        "value": "\"Si no quieres regresar\"",
+        "duration": "7140",
+        "unit": "ms"
+      }
+    },
+    "node_11": {
+      "id": "node_11",
+      "type": "say",
+      "data": {
+        "value": "\"¿Por qué vuelves a buscarme una vez más?\"",
+        "duration": "5260",
+        "unit": "ms"
+      }
+    },
+    "node_12": {
+      "id": "node_12",
+      "type": "say",
+      "data": {
+        "value": "\"No me pidas que te dé una última noche\"",
+        "duration": "8670",
+        "unit": "ms"
+      }
+    },
+    "node_13": {
+      "id": "node_13",
+      "type": "say",
+      "data": {
+        "value": "\"Mi buen amor\"",
+        "duration": "6790",
+        "unit": "ms"
+      }
+    },
+    "node_14": {
+      "id": "node_14",
+      "type": "say",
+      "data": {
+        "value": "\"Parece fácil para ti\"",
+        "duration": "7910",
+        "unit": "ms"
+      }
+    },
+    "node_15": {
+      "id": "node_15",
+      "type": "say",
+      "data": {
+        "value": "\"Alejarte para luego exigir\"",
+        "duration": "5160",
+        "unit": "ms"
+      }
+    },
+    "node_16": {
+      "id": "node_16",
+      "type": "say",
+      "data": {
+        "value": "\"Que te quiera como si nada, nada, nada yo sintiera\"",
+        "duration": "10410",
+        "unit": "ms"
+      }
+    },
+    "node_17": {
+      "id": "node_17",
+      "type": "sleep",
+      "data": {
+        "duration": "2040"
+      }
+    },
+    "node_18": {
+      "id": "node_18",
+      "type": "say",
+      "data": {
+        "value": "\"Después de todo lo que tuve que pasar\"",
+        "duration": "7730",
+        "unit": "ms"
+      }
+    },
+    "node_19": {
+      "id": "node_19",
+      "type": "say",
+      "data": {
+        "value": "\"Las terapias, los amores de mentira, más mentiras\"",
+        "duration": "7430",
+        "unit": "ms"
+      }
+    },
+    "node_20": {
+      "id": "node_20",
+      "type": "say",
+      "data": {
+        "value": "\"Y ahora quieres que sea tu amiga\"",
+        "duration": "5410",
+        "unit": "ms"
+      }
+    },
+    "node_21": {
+      "id": "node_21",
+      "type": "say",
+      "data": {
+        "value": "\"Pues, amigo, dime cómo borro esto que siento\"",
+        "duration": "8750",
+        "unit": "ms"
+      }
+    },
+    "node_22": {
+      "id": "node_22",
+      "type": "say",
+      "data": {
+        "value": "\"Mi buen amor\"",
+        "duration": "7640",
+        "unit": "ms"
+      }
+    },
+    "node_23": {
+      "id": "node_23",
+      "type": "say",
+      "data": {
+        "value": "\"Si no quieres regresar\"",
+        "duration": "7300",
+        "unit": "ms"
+      }
+    },
+    "node_24": {
+      "id": "node_24",
+      "type": "say",
+      "data": {
+        "value": "\"¿Por qué vuelves a buscarme una vez más?\"",
+        "duration": "5290",
+        "unit": "ms"
+      }
+    },
+    "node_25": {
+      "id": "node_25",
+      "type": "say",
+      "data": {
+        "value": "\"No me pidas que te dé una última noche\"",
+        "duration": "8550",
+        "unit": "ms"
+      }
+    },
+    "node_26": {
+      "id": "node_26",
+      "type": "say",
+      "data": {
+        "value": "\"Mi buen amor\"",
+        "duration": "6760",
+        "unit": "ms"
+      }
+    },
+    "node_27": {
+      "id": "node_27",
+      "type": "say",
+      "data": {
+        "value": "\"Parece fácil para ti\"",
+        "duration": "7940",
+        "unit": "ms"
+      }
+    },
+    "node_28": {
+      "id": "node_28",
+      "type": "say",
+      "data": {
+        "value": "\"Alejarte para luego exigir\"",
+        "duration": "5140",
+        "unit": "ms"
+      }
+    },
+    "node_29": {
+      "id": "node_29",
+      "type": "say",
+      "data": {
+        "value": "\"Que te quiera como si nada, nada, nada yo sintiera\"",
+        "duration": "12710",
+        "unit": "ms"
+      }
+    },
+    "node_30": {
+      "id": "node_30",
+      "type": "say",
+      "data": {
+        "value": "\"Mi buen amor\"",
+        "duration": "6340",
+        "unit": "ms"
+      }
+    }
+  },
+  "rootNodes": [
+    "node_0",
+    "node_1",
+    "node_2",
+    "node_3",
+    "node_4",
+    "node_5",
+    "node_6",
+    "node_7",
+    "node_8",
+    "node_9",
+    "node_10",
+    "node_11",
+    "node_12",
+    "node_13",
+    "node_14",
+    "node_15",
+    "node_16",
+    "node_17",
+    "node_18",
+    "node_19",
+    "node_20",
+    "node_21",
+    "node_22",
+    "node_23",
+    "node_24",
+    "node_25",
+    "node_26",
+    "node_27",
+    "node_28",
+    "node_29",
+    "node_30"
+  ],
+  "variables": {}
+}

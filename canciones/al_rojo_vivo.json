@@ -1,0 +1,505 @@
+{
+  "nodes": {
+    "node_0": {
+      "id": "node_0",
+      "type": "sleep",
+      "data": {
+        "duration": "5170"
+      }
+    },
+    "node_1": {
+      "id": "node_1",
+      "type": "say",
+      "data": {
+        "value": "\"Ánimo, Reinaldo González\"",
+        "duration": "2490",
+        "unit": "ms"
+      }
+    },
+    "node_2": {
+      "id": "node_2",
+      "type": "say",
+      "data": {
+        "value": "\"Almacén Rancho Alegre\"",
+        "duration": "5390",
+        "unit": "ms"
+      }
+    },
+    "node_3": {
+      "id": "node_3",
+      "type": "say",
+      "data": {
+        "value": "\"Allá en Cúcuta\"",
+        "duration": "4280",
+        "unit": "ms"
+      }
+    },
+    "node_4": {
+      "id": "node_4",
+      "type": "say",
+      "data": {
+        "value": "\"Ayer me llamó una niña\"",
+        "duration": "1920",
+        "unit": "ms"
+      }
+    },
+    "node_5": {
+      "id": "node_5",
+      "type": "say",
+      "data": {
+        "value": "\"En medio del desespero\"",
+        "duration": "2190",
+        "unit": "ms"
+      }
+    },
+    "node_6": {
+      "id": "node_6",
+      "type": "say",
+      "data": {
+        "value": "\"Me dijo: 'yo quiero verga'\"",
+        "duration": "1860",
+        "unit": "ms"
+      }
+    },
+    "node_7": {
+      "id": "node_7",
+      "type": "say",
+      "data": {
+        "value": "\"Pero la miré primero\"",
+        "duration": "2260",
+        "unit": "ms"
+      }
+    },
+    "node_8": {
+      "id": "node_8",
+      "type": "say",
+      "data": {
+        "value": "\"Me la llevé pa'l hotel\"",
+        "duration": "2010",
+        "unit": "ms"
+      }
+    },
+    "node_9": {
+      "id": "node_9",
+      "type": "say",
+      "data": {
+        "value": "\"Y allá parecía un derrame\"",
+        "duration": "1840",
+        "unit": "ms"
+      }
+    },
+    "node_10": {
+      "id": "node_10",
+      "type": "say",
+      "data": {
+        "value": "\"Yo haciéndole la miné\"",
+        "duration": "2070",
+        "unit": "ms"
+      }
+    },
+    "node_11": {
+      "id": "node_11",
+      "type": "say",
+      "data": {
+        "value": "\"Y ella mame que más mame\"",
+        "duration": "2170",
+        "unit": "ms"
+      }
+    },
+    "node_12": {
+      "id": "node_12",
+      "type": "say",
+      "data": {
+        "value": "\"Yo le hice voltear el culo\"",
+        "duration": "2160",
+        "unit": "ms"
+      }
+    },
+    "node_13": {
+      "id": "node_13",
+      "type": "say",
+      "data": {
+        "value": "\"Y se lo estaba metiendo\"",
+        "duration": "1920",
+        "unit": "ms"
+      }
+    },
+    "node_14": {
+      "id": "node_14",
+      "type": "say",
+      "data": {
+        "value": "\"Me dijo: 'voy a morirme\"",
+        "duration": "1990",
+        "unit": "ms"
+      }
+    },
+    "node_15": {
+      "id": "node_15",
+      "type": "say",
+      "data": {
+        "value": "\"Sigue, papito, batiendo'\"",
+        "duration": "1750",
+        "unit": "ms"
+      }
+    },
+    "node_16": {
+      "id": "node_16",
+      "type": "say",
+      "data": {
+        "value": "\"Mételo así y hazme sentir\"",
+        "duration": "2220",
+        "unit": "ms"
+      }
+    },
+    "node_17": {
+      "id": "node_17",
+      "type": "say",
+      "data": {
+        "value": "\"Que ya me voy a venir\"",
+        "duration": "1700",
+        "unit": "ms"
+      }
+    },
+    "node_18": {
+      "id": "node_18",
+      "type": "say",
+      "data": {
+        "value": "\"Ay, mételo así y hazme sentir\"",
+        "duration": "2500",
+        "unit": "ms"
+      }
+    },
+    "node_19": {
+      "id": "node_19",
+      "type": "say",
+      "data": {
+        "value": "\"Que ya me voy a venir\"",
+        "duration": "3930",
+        "unit": "ms"
+      }
+    },
+    "node_20": {
+      "id": "node_20",
+      "type": "say",
+      "data": {
+        "value": "\"Es para que lo vendas\"",
+        "duration": "3010",
+        "unit": "ms"
+      }
+    },
+    "node_21": {
+      "id": "node_21",
+      "type": "say",
+      "data": {
+        "value": "\"Almacén Rancho Alegre\"",
+        "duration": "11650",
+        "unit": "ms"
+      }
+    },
+    "node_22": {
+      "id": "node_22",
+      "type": "say",
+      "data": {
+        "value": "\"De pronto, como una loca\"",
+        "duration": "2170",
+        "unit": "ms"
+      }
+    },
+    "node_23": {
+      "id": "node_23",
+      "type": "say",
+      "data": {
+        "value": "\"Dijo: 'papi, no se mueva'\"",
+        "duration": "1890",
+        "unit": "ms"
+      }
+    },
+    "node_24": {
+      "id": "node_24",
+      "type": "say",
+      "data": {
+        "value": "\"Y entre gritos y suspiros\"",
+        "duration": "1960",
+        "unit": "ms"
+      }
+    },
+    "node_25": {
+      "id": "node_25",
+      "type": "say",
+      "data": {
+        "value": "\"Casi me arranca una güeva (¿cómo?)\"",
+        "duration": "2290",
+        "unit": "ms"
+      }
+    },
+    "node_26": {
+      "id": "node_26",
+      "type": "say",
+      "data": {
+        "value": "\"Descansamos tres minutos\"",
+        "duration": "1830",
+        "unit": "ms"
+      }
+    },
+    "node_27": {
+      "id": "node_27",
+      "type": "say",
+      "data": {
+        "value": "\"Dijo: 'usted me va a matar'\"",
+        "duration": "2060",
+        "unit": "ms"
+      }
+    },
+    "node_28": {
+      "id": "node_28",
+      "type": "say",
+      "data": {
+        "value": "\"Y sin mencionar más nada\"",
+        "duration": "1970",
+        "unit": "ms"
+      }
+    },
+    "node_29": {
+      "id": "node_29",
+      "type": "say",
+      "data": {
+        "value": "\"Volvió y se puso a mamar\"",
+        "duration": "1670",
+        "unit": "ms"
+      }
+    },
+    "node_30": {
+      "id": "node_30",
+      "type": "say",
+      "data": {
+        "value": "\"Ay, mételo así y hazme sentir\"",
+        "duration": "2190",
+        "unit": "ms"
+      }
+    },
+    "node_31": {
+      "id": "node_31",
+      "type": "say",
+      "data": {
+        "value": "\"Que ya me voy a venir\"",
+        "duration": "1710",
+        "unit": "ms"
+      }
+    },
+    "node_32": {
+      "id": "node_32",
+      "type": "say",
+      "data": {
+        "value": "\"Ay, mételo así y hazme sentir\"",
+        "duration": "2370",
+        "unit": "ms"
+      }
+    },
+    "node_33": {
+      "id": "node_33",
+      "type": "say",
+      "data": {
+        "value": "\"Que ya me voy a venir\"",
+        "duration": "18880",
+        "unit": "ms"
+      }
+    },
+    "node_34": {
+      "id": "node_34",
+      "type": "say",
+      "data": {
+        "value": "\"De pronto, sentí un quejido\"",
+        "duration": "2080",
+        "unit": "ms"
+      }
+    },
+    "node_35": {
+      "id": "node_35",
+      "type": "say",
+      "data": {
+        "value": "\"Y en el clóset yo fui viendo\"",
+        "duration": "1890",
+        "unit": "ms"
+      }
+    },
+    "node_36": {
+      "id": "node_36",
+      "type": "say",
+      "data": {
+        "value": "\"El camarero agachado\"",
+        "duration": "1970",
+        "unit": "ms"
+      }
+    },
+    "node_37": {
+      "id": "node_37",
+      "type": "say",
+      "data": {
+        "value": "\"La paja se estaba haciendo\"",
+        "duration": "2240",
+        "unit": "ms"
+      }
+    },
+    "node_38": {
+      "id": "node_38",
+      "type": "say",
+      "data": {
+        "value": "\"Le dije: 'vení, hijueputa\"",
+        "duration": "1850",
+        "unit": "ms"
+      }
+    },
+    "node_39": {
+      "id": "node_39",
+      "type": "say",
+      "data": {
+        "value": "\"Así, con el disimulo\"",
+        "duration": "2280",
+        "unit": "ms"
+      }
+    },
+    "node_40": {
+      "id": "node_40",
+      "type": "say",
+      "data": {
+        "value": "\"Que nos estabas gateando\"",
+        "duration": "1980",
+        "unit": "ms"
+      }
+    },
+    "node_41": {
+      "id": "node_41",
+      "type": "say",
+      "data": {
+        "value": "\"Te voy a dar es po' el culo'\"",
+        "duration": "2020",
+        "unit": "ms"
+      }
+    },
+    "node_42": {
+      "id": "node_42",
+      "type": "say",
+      "data": {
+        "value": "\"Lo agarré y en cuatro patas\"",
+        "duration": "1960",
+        "unit": "ms"
+      }
+    },
+    "node_43": {
+      "id": "node_43",
+      "type": "say",
+      "data": {
+        "value": "\"Le entregué un escobillón\"",
+        "duration": "2240",
+        "unit": "ms"
+      }
+    },
+    "node_44": {
+      "id": "node_44",
+      "type": "say",
+      "data": {
+        "value": "\"Te lo metes por el culo\"",
+        "duration": "1850",
+        "unit": "ms"
+      }
+    },
+    "node_45": {
+      "id": "node_45",
+      "type": "say",
+      "data": {
+        "value": "\"Y deja de ser güevón\"",
+        "duration": "1520",
+        "unit": "ms"
+      }
+    },
+    "node_46": {
+      "id": "node_46",
+      "type": "say",
+      "data": {
+        "value": "\"Ay, mételo así y hazme sentir\"",
+        "duration": "2410",
+        "unit": "ms"
+      }
+    },
+    "node_47": {
+      "id": "node_47",
+      "type": "say",
+      "data": {
+        "value": "\"Que ya me voy a venir\"",
+        "duration": "1650",
+        "unit": "ms"
+      }
+    },
+    "node_48": {
+      "id": "node_48",
+      "type": "say",
+      "data": {
+        "value": "\"Ay, mételo así y hazme sentir\"",
+        "duration": "2250",
+        "unit": "ms"
+      }
+    },
+    "node_49": {
+      "id": "node_49",
+      "type": "say",
+      "data": {
+        "value": "\"Que ya me voy a venir\"",
+        "duration": "1440",
+        "unit": "ms"
+      }
+    }
+  },
+  "rootNodes": [
+    "node_0",
+    "node_1",
+    "node_2",
+    "node_3",
+    "node_4",
+    "node_5",
+    "node_6",
+    "node_7",
+    "node_8",
+    "node_9",
+    "node_10",
+    "node_11",
+    "node_12",
+    "node_13",
+    "node_14",
+    "node_15",
+    "node_16",
+    "node_17",
+    "node_18",
+    "node_19",
+    "node_20",
+    "node_21",
+    "node_22",
+    "node_23",
+    "node_24",
+    "node_25",
+    "node_26",
+    "node_27",
+    "node_28",
+    "node_29",
+    "node_30",
+    "node_31",
+    "node_32",
+    "node_33",
+    "node_34",
+    "node_35",
+    "node_36",
+    "node_37",
+    "node_38",
+    "node_39",
+    "node_40",
+    "node_41",
+    "node_42",
+    "node_43",
+    "node_44",
+    "node_45",
+    "node_46",
+    "node_47",
+    "node_48",
+    "node_49"
+  ],
+  "variables": {}
+}
